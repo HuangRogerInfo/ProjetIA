@@ -14,4 +14,9 @@ public class Arete {
     public int getS2(){
         return s2;
     }
+
+    @Override
+    public String toString() {
+        return "("+s1+","+s2+")";
+    }
 }

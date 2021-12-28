@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Etat2 {
@@ -20,7 +21,6 @@ public class Etat2 {
             circuit_aleatoire.add(i);
         }
         Collections.shuffle(circuit_aleatoire);
-
         this.circuit = this.getSetAretes(circuit_aleatoire);
     }
 
@@ -64,10 +64,35 @@ public class Etat2 {
      */
     public HashSet<Arete> getSetAretes(LinkedList<Integer> circuit_aleatoire){
         HashSet<Arete> aretes = new HashSet<Arete>();
-        for(int i=0,j=1; j<circuit_aleatoire.size(); i++,j++){
+        for(int i=0,j=i+1; j<circuit_aleatoire.size(); i++,j++){
             aretes.add(new Arete(circuit_aleatoire.get(i),circuit_aleatoire.get(j)));
         }
+        aretes.add(new Arete(circuit_aleatoire.getLast(),circuit_aleatoire.getFirst()));
+
+        //System.out.println(circuit_aleatoire);
+        //System.out.println(aretes);
         return aretes;
+    }
+
+    public HashSet<Arete> getSet(){
+        return this.circuit;
+    }
+
+    public LinkedList<Integer> getList(){
+        LinkedList<Integer> circuit_list = new LinkedList<Integer>();
+
+        Iterator<Arete> it = circuit.iterator();
+        circuit_list.add(it.next().getS1());
+        circuit_list.add(it.next().getS2());
+
+        while(circuit_list.size()!=g.getTaille()){
+            for(Arete a:circuit){
+                if(a.getS1()==circuit_list.getLast()){
+                    circuit_list.add(a.getS2());
+                }
+            }
+        }
+        return circuit_list;
     }
 
     /**
@@ -84,10 +109,15 @@ public class Etat2 {
                 //Pour chaque paires possibles d'aretes on produit un voisin
                 Arete arete1 = list.get(i);
                 Arete arete2 = list.get(j);
+
+                if(arete1.getS1()==arete2.getS1()){
+                    System.out.println("?");
+                }
+
                 Arete new_arete1 = new Arete(arete1.getS1(),arete2.getS1());
                 Arete new_arete2 = new Arete(arete1.getS2(),arete2.getS2());
 
-                HashSet<Arete> newSet = circuit;
+                HashSet<Arete> newSet = new HashSet<Arete>(circuit);
                 newSet.remove(arete1);
                 newSet.remove(arete2);
                 newSet.add(new_arete1);
@@ -95,7 +125,6 @@ public class Etat2 {
                 voisinage.add(new Etat2(g,newSet));
             }
         }
-
         return voisinage;
     }
 }
