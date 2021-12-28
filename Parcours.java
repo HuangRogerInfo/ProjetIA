@@ -1,4 +1,3 @@
-
 //import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,7 +32,7 @@ public class Parcours {
         explored.add(current_city);
 
         while (actions().size() > 0) {
-            HashSet<Pair> actions = actions();
+            HashSet<Action> actions = actions();
             int previous_city = current_city;
             current_city = minimum(actions).getS();
             explored.add(current_city);
@@ -49,15 +48,15 @@ public class Parcours {
      * @return un ensemble de paires d'action/cout
      * @throws Exception en cas de dépassement d'indices
      */
-    public HashSet<Pair> actions() throws Exception {
-        HashSet<Pair> actions = new HashSet<Pair>();
+    public HashSet<Action> actions() throws Exception {
+        HashSet<Action> actions = new HashSet<Action>();
         for (int i = 0; i < g.getTaille(); i++) {
             for (int j = 0; j < g.getTaille(); j++) {
                 if (!explored.contains(j) && j != i) {
                     int gn = g.getPoids(i, j);
                     // int hn = heuristiqueMST(j);
                     int hn = heuristiqueNulle(j);
-                    actions.add(new Pair(j, gn + hn));
+                    actions.add(new Action(j, gn + hn));
                 }
             }
         }
@@ -70,7 +69,7 @@ public class Parcours {
      * @param actions un ensemble d'actions
      * @return la paire action/cout minimal
      */
-    public Pair minimum(HashSet<Pair> actions) {
+    public Action minimum(HashSet<Action> actions) {
         return Collections.min(actions);
     }
 

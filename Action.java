@@ -1,8 +1,8 @@
-public class Pair implements Comparable<Pair> {
+public class Action implements Comparable<Action> {
     private int sommet;
     private int cout;
 
-    public Pair(int s, int c) {
+    public Action(int s, int c) {
         sommet = s;
         cout = c;
     }
@@ -23,7 +23,7 @@ public class Pair implements Comparable<Pair> {
             return false;
         if (getClass() != o.getClass())
             return false;
-        Pair p = (Pair) o;
+        Action p = (Action) o;
         return (sommet == p.sommet) && (cout == p.cout);
     }
 
@@ -33,7 +33,7 @@ public class Pair implements Comparable<Pair> {
     }
 
     @Override
-    public int compareTo(Pair p) {
+    public int compareTo(Action p) {
         return Integer.compare(this.cout, p.cout);
     }
 
