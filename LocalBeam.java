@@ -29,10 +29,7 @@ public class LocalBeam {
                 voisinage.addAll(unEtat.getVoisinage());
             }
             System.out.println(i+"/"+voisinage.size());
-            for(Etat2 etat : voisinage){
-                System.out.println(etat.getSet());
-            }
-
+            
             //Parmis ces états on choisit les k meilleurs
             HashSet<Etat2> meilleurs_etats = new HashSet<Etat2>();
     
@@ -51,6 +48,9 @@ public class LocalBeam {
                 meilleurs_etats.add(etatMax);
             }
             etats = meilleurs_etats;
+            for(Etat2 etat : etats){
+                System.out.println("modif"+etat.getSet());
+            }
         }
 
         Iterator<Etat2> it = etats.iterator();
