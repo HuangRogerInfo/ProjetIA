@@ -1,12 +1,10 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Etat2 {
     private GrapheComplet g;
-    private HashSet<Arete> circuit;
+    private LinkedList<Integer> circuit;
 
     /**
      * Constructeur produisant un Etat aleatoire à partir d'un graphe
@@ -20,18 +18,12 @@ public class Etat2 {
         for(int i=0;i<g.getTaille();i++){
             circuit_aleatoire.add(i);
         }
+        
         Collections.shuffle(circuit_aleatoire);
-        this.circuit = this.getSetAretes(circuit_aleatoire);
-    }
+        //circuit_aleatoire.add(circuit_aleatoire.getFirst());
 
-    /**
-     * Constructeur produisant un Etat défini par un circuit hamiltonien donné
-     * @param g un graphe
-     * @param circuit un ensemble d'arete
-     */
-    public Etat2(GrapheComplet g, HashSet<Arete> circuit){
-        this.g = g;
-        this.circuit = circuit;
+        System.out.println(circuit_aleatoire);
+        this.circuit = circuit_aleatoire;
     }
 
     /**
@@ -39,9 +31,9 @@ public class Etat2 {
      * @param g un graphe
      * @param circuit une liste chainée d'entier
      */
-    public Etat2(GrapheComplet g, LinkedList<Integer> circuit){
+    public Etat2(GrapheComplet g, LinkedList<Integer>circuit){
         this.g = g;
-        this.circuit = this.getSetAretes(circuit);
+        this.circuit = circuit;
     }
 
     /**
@@ -51,48 +43,14 @@ public class Etat2 {
      */
     public int getTotalCost() throws Exception{
         int total_cost = 0;
-        for(Arete a:circuit){
-            total_cost += g.getPoids(a.getS1(),a.getS2());
+        for(int i=0,j=1;j<circuit.size();i++,j++){
+            total_cost+= g.getPoids(circuit.get(i), circuit.get(j));
         }
         return total_cost;
     }
 
-    /**
-     * Retourne l'ensemble d'arete correspondant à un circuit hamiltonien donné
-     * @param circuit_aleatoire
-     * @return un ensemble d'arete
-     */
-    public HashSet<Arete> getSetAretes(LinkedList<Integer> circuit_aleatoire){
-        HashSet<Arete> aretes = new HashSet<Arete>();
-        for(int i=0,j=i+1; j<circuit_aleatoire.size(); i++,j++){
-            aretes.add(new Arete(circuit_aleatoire.get(i),circuit_aleatoire.get(j)));
-        }
-        aretes.add(new Arete(circuit_aleatoire.getLast(),circuit_aleatoire.getFirst()));
-
-        //System.out.println(circuit_aleatoire);
-        //System.out.println(aretes);
-        return aretes;
-    }
-
-    public HashSet<Arete> getSet(){
+    public LinkedList<Integer> getCircuit(){
         return this.circuit;
-    }
-
-    public LinkedList<Integer> getList(){
-        LinkedList<Integer> circuit_list = new LinkedList<Integer>();
-
-        Iterator<Arete> it = circuit.iterator();
-        circuit_list.add(it.next().getS1());
-        circuit_list.add(it.next().getS2());
-
-        while(circuit_list.size()!=g.getTaille()){
-            for(Arete a:circuit){
-                if(a.getS1()==circuit_list.getLast()){
-                    circuit_list.add(a.getS2());
-                }
-            }
-        }
-        return circuit_list;
     }
 
     /**
@@ -100,31 +58,39 @@ public class Etat2 {
      * @return un ensemble d'état
      */
     public HashSet<Etat2> getVoisinage(){
+        //System.out.println("c"+circuit);
 
         HashSet<Etat2> voisinage = new HashSet<Etat2>();
 
-        ArrayList<Arete> list = new ArrayList<Arete>(circuit);
-        for(int i=0;i<list.size();i++){
-            for(int j =i+1; j<list.size();j++){
-                //Pour chaque paires possibles d'aretes on produit un voisin
-                Arete arete1 = list.get(i);
-                Arete arete2 = list.get(j);
+        LinkedList<Integer> reversed = new LinkedList<Integer>(circuit);
+        Collections.reverse(reversed);
 
-                if(arete1.getS1()==arete2.getS1()){
-                    System.out.println("?");
+        for(int i=0;i<circuit.size();i++){
+            for(int j =i+1; j<circuit.size();j++){
+                LinkedList<Integer> new_list = new LinkedList<Integer>(circuit);
+
+                //On inverse la partie de la liste entre i et j
+                int delta = circuit.size()-(j+1);
+                for(int w=i,z=delta;w<=j;w++,z++){
+                    new_list.set(w,reversed.get(z));
                 }
 
-                Arete new_arete1 = new Arete(arete1.getS1(),arete2.getS1());
-                Arete new_arete2 = new Arete(arete1.getS2(),arete2.getS2());
-
-                HashSet<Arete> newSet = new HashSet<Arete>(circuit);
-                newSet.remove(arete1);
-                newSet.remove(arete2);
-                newSet.add(new_arete1);
-                newSet.add(new_arete2);
-                voisinage.add(new Etat2(g,newSet));
+                //System.out.println("["+i+"/"+j+"]="+new_list);
+                voisinage.add(new Etat2(g,new_list));
             }
         }
         return voisinage;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null)
+            return false;
+        if (getClass() != o.getClass())
+            return false;
+        Etat2 p = (Etat2) o;
+        return (circuit.equals(p.getCircuit()));
     }
 }

@@ -14,6 +14,7 @@ public class LocalBeam {
 
     public Etat2 compute(int nb_iterations) throws Exception{
 
+        //On initilise des etats aleatoires
         HashSet<Etat2> random_etats = new HashSet<Etat2>();
         while(random_etats.size()<k){
             random_etats.add(new Etat2(g));
@@ -22,15 +23,19 @@ public class LocalBeam {
         
         for(int i = 0; i<nb_iterations;i++){
 
-            //On fait l'union des états des voisinages
+            //On fait l'union des voisinages de chaques états
             HashSet<Etat2> voisinage = new HashSet<Etat2>();
 
             for(Etat2 unEtat:etats){
                 voisinage.addAll(unEtat.getVoisinage());
             }
             System.out.println(i+"/"+voisinage.size());
+
+            for(Etat2 unEtat:voisinage){
+                System.out.println("voisinage"+unEtat.getCircuit()+"cost="+unEtat.getTotalCost());
+            }
             
-            //Parmis ces états on choisit les k meilleurs
+            //Parmis ces voisinages on choisit les k meilleurs
             HashSet<Etat2> meilleurs_etats = new HashSet<Etat2>();
     
             while(meilleurs_etats.size()<k){
@@ -49,7 +54,7 @@ public class LocalBeam {
             }
             etats = meilleurs_etats;
             for(Etat2 etat : etats){
-                System.out.println("modif"+etat.getSet());
+                System.out.println("best"+etat.getCircuit()+"cost="+etat.getTotalCost());
             }
         }
 
@@ -63,4 +68,6 @@ public class LocalBeam {
         }
         return meilleurEtat;
     }
+
+    
 }

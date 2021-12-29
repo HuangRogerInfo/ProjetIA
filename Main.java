@@ -15,7 +15,7 @@ public class Main {
             //System.out.println(graphe.getpoidsACM());
             
             LocalBeam l = new LocalBeam(5,graphe);
-            System.out.println(l.compute(2).getSet());
+            System.out.println(l.compute(2).getCircuit());
 
 
         } catch (Exception e) {
