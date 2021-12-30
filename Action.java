@@ -1,14 +1,14 @@
 public class Action implements Comparable<Action> {
-    private int sommet;
+    private Etat etat;
     private int cout;
 
-    public Action(int s, int c) {
-        sommet = s;
+    public Action(Etat e, int c) {
+        etat = e;
         cout = c;
     }
 
-    public int getS() {
-        return sommet;
+    public Etat getS() {
+        return etat;
     }
 
     public int getC() {
@@ -24,12 +24,12 @@ public class Action implements Comparable<Action> {
         if (getClass() != o.getClass())
             return false;
         Action p = (Action) o;
-        return (sommet == p.sommet) && (cout == p.cout);
+        return (this.etat.equals(p.etat) && (cout == p.cout));
     }
 
     @Override
     public String toString() {
-        return "(" + sommet + "," + cout + ")";
+        return "(" + etat + "," + cout + ")";
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Action implements Comparable<Action> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + sommet;
+        hash = 31 * hash + etat.hashCode();
         hash = 31 * hash + cout;
         return hash;
     }

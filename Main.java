@@ -10,10 +10,12 @@ public class Main {
 
         try {
             GrapheComplet graphe = new GrapheComplet(matrice_exemple);
-            Parcours p = new Parcours(graphe, 0);
-            System.out.println(p.A_star());
-            System.out.println(p.getCost());
 
+            // Astar
+            Astar a = new Astar(0, graphe);
+            System.out.println(a.compute());
+
+            // Local Beam
             LocalBeam l = new LocalBeam(3, graphe);
             Etat2 result = l.compute(2);
             System.out.println(result.getCircuit());

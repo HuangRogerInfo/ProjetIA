@@ -13,7 +13,6 @@ public class LocalBeam {
     }
 
     public Etat2 compute(int nb_iterations) throws Exception {
-
         // On initilise des etats aleatoires
         HashSet<Etat2> random_etats = new HashSet<Etat2>();
         while (random_etats.size() < k) {
