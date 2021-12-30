@@ -11,12 +11,13 @@ public class Main {
         try {
             GrapheComplet graphe = new GrapheComplet(matrice_exemple);
             Parcours p = new Parcours(graphe, 0);
-            //System.out.println(p.A_star());
-            //System.out.println(graphe.getpoidsACM());
-            
-            LocalBeam l = new LocalBeam(5,graphe);
-            System.out.println(l.compute(2).getCircuit());
+            System.out.println(p.A_star());
+            System.out.println(p.getCost());
 
+            LocalBeam l = new LocalBeam(3, graphe);
+            Etat2 result = l.compute(2);
+            System.out.println(result.getCircuit());
+            System.out.println(result.getTotalCost());
 
         } catch (Exception e) {
             e.printStackTrace();

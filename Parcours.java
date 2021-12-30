@@ -1,3 +1,4 @@
+
 //import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,7 +36,10 @@ public class Parcours {
             HashSet<Action> actions = actions();
             int previous_city = current_city;
             current_city = minimum(actions).getS();
+            System.out.println(actions);
+
             explored.add(current_city);
+            System.out.println("explored:" + explored);
             total_cost += g.getPoids(previous_city, current_city);
         }
 
@@ -50,12 +54,13 @@ public class Parcours {
      */
     public HashSet<Action> actions() throws Exception {
         HashSet<Action> actions = new HashSet<Action>();
-        for (int i = 0; i < g.getTaille(); i++) {
+        // pour chaque autres villes
+        for (int i : explored) {
             for (int j = 0; j < g.getTaille(); j++) {
                 if (!explored.contains(j) && j != i) {
                     int gn = g.getPoids(i, j);
+                    int hn = 0;
                     // int hn = heuristiqueMST(j);
-                    int hn = heuristiqueNulle(j);
                     actions.add(new Action(j, gn + hn));
                 }
             }
@@ -77,21 +82,24 @@ public class Parcours {
      * Retourne la distance totale parcourue
      * 
      * @return une distance
+     * @throws Exception
      */
-    public int getCost() {
-        return this.total_cost;
+    public int getCost() throws Exception {
+        int total_cost = 0;
+        for (int i = 0, j = 1; j < explored.size(); i++, j++) {
+            total_cost += g.getPoids(explored.get(i), explored.get(j));
+        }
+        total_cost += g.getPoids(explored.getLast(), explored.getFirst());
+        return total_cost;
     }
 
     /**
-     * Une heuristique nulle
+     * Heuristique
      * 
      * @param sommet
-     * @return un entier
+     * @return
+     * @throws Exception
      */
-    public int heuristiqueNulle(int sommet) {
-        return 0;
-    }
-
     public int heuristiqueMST(int sommet) throws Exception {
         int new_taille = g.getTaille() - explored.size() - 1;
         int[][] new_matrice = new int[new_taille][new_taille];

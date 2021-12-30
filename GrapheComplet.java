@@ -35,6 +35,11 @@ public class GrapheComplet {
         this.matrice = matrice;
     }
 
+    /**
+     * Retourne le poids de l'arbre couvrant ayant le plus petit poids.
+     * 
+     * @return un entier
+     */
     public int getpoidsACM() {
         if (taille == 0) {
             return 0;
@@ -85,30 +90,6 @@ public class GrapheComplet {
         }
 
         return matrice[sommet1][sommet2];
-    }
-
-    public GrapheComplet supprimerNoeud(int n) throws Exception {
-        if (n >= taille || n < 0) {
-            throw new Exception("Probleme d'indice");
-        }
-        int new_taille = taille - 1;
-        int[][] new_matrice = new int[new_taille][new_taille];
-
-        if (new_taille > 0) {
-            for (int i = 0, new_i = 0; i < taille; i++, new_i++) {
-                if (i == n) {
-                    i++;
-                }
-                for (int j = 0, new_j = 0; j < taille; j++, new_j++) {
-                    if (j == n) {
-                        j++;
-                    }
-
-                    new_matrice[new_i][new_j] = matrice[i][j];
-                }
-            }
-        }
-        return new GrapheComplet(new_matrice);
     }
 
     /* Retourne la taille de la matrice */

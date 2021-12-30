@@ -6,68 +6,59 @@ public class LocalBeam {
     private HashSet<Etat2> etats;
     private GrapheComplet g;
 
-    public LocalBeam(int k, GrapheComplet g){
+    public LocalBeam(int k, GrapheComplet g) {
         this.g = g;
         this.k = k;
         this.etats = new HashSet<Etat2>();
     }
 
-    public Etat2 compute(int nb_iterations) throws Exception{
+    public Etat2 compute(int nb_iterations) throws Exception {
 
-        //On initilise des etats aleatoires
+        // On initilise des etats aleatoires
         HashSet<Etat2> random_etats = new HashSet<Etat2>();
-        while(random_etats.size()<k){
+        while (random_etats.size() < k) {
             random_etats.add(new Etat2(g));
         }
         this.etats = random_etats;
-        
-        for(int i = 0; i<nb_iterations;i++){
 
-            //On fait l'union des voisinages de chaques états
+        for (int i = 0; i < nb_iterations; i++) {
+
+            // On fait l'union des voisinages de chaques états
             HashSet<Etat2> voisinage = new HashSet<Etat2>();
 
-            for(Etat2 unEtat:etats){
+            for (Etat2 unEtat : etats) {
                 voisinage.addAll(unEtat.getVoisinage());
             }
-            System.out.println(i+"/"+voisinage.size());
 
-            for(Etat2 unEtat:voisinage){
-                System.out.println("voisinage"+unEtat.getCircuit()+"cost="+unEtat.getTotalCost());
-            }
-            
-            //Parmis ces voisinages on choisit les k meilleurs
+            // Parmis ces voisinages on choisit les k meilleurs
             HashSet<Etat2> meilleurs_etats = new HashSet<Etat2>();
-    
-            while(meilleurs_etats.size()<k){
+
+            while (meilleurs_etats.size() < k) {
                 Iterator<Etat2> it = voisinage.iterator();
                 Etat2 etatMax = it.next();
-    
-                while(it.hasNext()){
+
+                while (it.hasNext()) {
                     Etat2 newEtat = it.next();
-                    if(newEtat.getTotalCost()<etatMax.getTotalCost()){
+                    if (newEtat.getTotalCost() < etatMax.getTotalCost()) {
                         etatMax = newEtat;
                     }
                 }
-    
+
                 voisinage.remove(etatMax);
                 meilleurs_etats.add(etatMax);
             }
             etats = meilleurs_etats;
-            for(Etat2 etat : etats){
-                System.out.println("best"+etat.getCircuit()+"cost="+etat.getTotalCost());
-            }
         }
 
         Iterator<Etat2> it = etats.iterator();
         Etat2 meilleurEtat = it.next();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             Etat2 newEtat = it.next();
-            if(newEtat.getTotalCost()<meilleurEtat.getTotalCost()){
+            if (newEtat.getTotalCost() < meilleurEtat.getTotalCost()) {
                 meilleurEtat = newEtat;
             }
         }
         return meilleurEtat;
     }
 
-    
 }
