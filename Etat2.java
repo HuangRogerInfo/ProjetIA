@@ -7,7 +7,7 @@ public class Etat2 {
     private LinkedList<Integer> circuit;
 
     /**
-     * Constructeur produisant un Etat aleatoire à partir d'un graphe
+     * Constructeur d'un état aleatoire
      * 
      * @param g un graphe
      */
@@ -24,7 +24,7 @@ public class Etat2 {
     }
 
     /**
-     * Constructeur 2 produisant un Etat défini par un circuit hamiltonien donné
+     * Constructeur d'un état défini par un circuit hamiltonien donné
      * 
      * @param g       un graphe
      * @param circuit une liste chainée d'entier
@@ -35,33 +35,37 @@ public class Etat2 {
     }
 
     /**
-     * Retourne le voisinage possible à partir d'un état
+     * Retourne l'ensemble des états atteignables à partir de l'état courant
      * 
      * @return un ensemble d'état
      */
-    public HashSet<Etat2> getVoisinage() {
-        HashSet<Etat2> voisinage = new HashSet<Etat2>();
+    public HashSet<Etat2> getFrontier() {
+        HashSet<Etat2> frontier = new HashSet<Etat2>();
 
+        // Application de 2-opt pour trouver les voisins
         LinkedList<Integer> reversed = new LinkedList<Integer>(circuit);
         Collections.reverse(reversed);
 
         for (int i = 0; i < circuit.size(); i++) {
             for (int j = i + 1; j < circuit.size(); j++) {
+                //Pour toutes paires (i,j) possibles
                 LinkedList<Integer> new_list = new LinkedList<Integer>(circuit);
 
-                // On inverse le circuit entre i et j
+                // On crée un nouveau voisin en inversant l'ordre de parcours entre i et j
                 int delta = circuit.size() - (j + 1);
                 for (int w = i, z = delta; w <= j; w++, z++) {
                     new_list.set(w, reversed.get(z));
                 }
-                voisinage.add(new Etat2(g, new_list));
+
+                //On l'ajoute à la frontière
+                frontier.add(new Etat2(g, new_list));
             }
         }
-        return voisinage;
+        return frontier;
     }
 
     /**
-     * Retourne le cout total du circuit hamiltonien
+     * Retourne la distance totale du circuit
      * 
      * @return un entier
      * @throws Exception
@@ -75,6 +79,10 @@ public class Etat2 {
         return total_cost;
     }
 
+    /**
+     * Retourne le circuit hamiltonien de l'état courant
+     * @return une liste d'entier
+     */
     public LinkedList<Integer> getCircuit() {
         return this.circuit;
     }

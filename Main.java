@@ -1,5 +1,6 @@
 public class Main {
     public static void main(String[] args) {
+        //Matrice Exemple
         int[][] matrice_exemple = {
                 { 0, 21, 9, 21, 1 },
                 { 21, 0, 4, 8, 20 },
@@ -9,21 +10,19 @@ public class Main {
         };
 
         try {
+            //Création du graphe
             GrapheComplet graphe = new GrapheComplet(matrice_exemple);
 
-            // Astar
-            Astar a = new Astar(0, graphe);
+            //Application d'Astar
+            Astar a = new Astar(graphe, 0);
             System.out.println(a.compute());
 
-            // Local Beam
-            LocalBeam l = new LocalBeam(3, graphe);
-            Etat2 result = l.compute(2);
-            System.out.println(result.getCircuit());
-            System.out.println(result.getTotalCost());
+            //Application de Local Beam
+            LocalBeam l = new LocalBeam(graphe, 3);
+            System.out.println(l.compute(2));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

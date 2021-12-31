@@ -1,63 +1,72 @@
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class LocalBeam {
     private int k;
-    private HashSet<Etat2> etats;
-    private GrapheComplet g;
+    private HashSet<Etat2> trackedStates;
 
-    public LocalBeam(int k, GrapheComplet g) {
-        this.g = g;
+    /**
+     * Constructeur initialisant k états aléatoires
+     * @param g un graphe
+     * @param k un nombre d'états traqués
+     */
+    public LocalBeam(GrapheComplet g, int k) {
         this.k = k;
-        this.etats = new HashSet<Etat2>();
-    }
 
-    public Etat2 compute(int nb_iterations) throws Exception {
-        // On initilise des etats aleatoires
         HashSet<Etat2> random_etats = new HashSet<Etat2>();
         while (random_etats.size() < k) {
             random_etats.add(new Etat2(g));
         }
-        this.etats = random_etats;
+        this.trackedStates = random_etats;
+    }
+
+    /**
+     * Algorithme de recherche local d'une instance de voyageur de commerce
+     * @param nb_iterations
+     * @return un circuit
+     * @throws Exception
+     */
+    public LinkedList<Integer> compute(int nb_iterations) throws Exception {
 
         for (int i = 0; i < nb_iterations; i++) {
-
-            // On fait l'union des voisinages de chaques états
-            HashSet<Etat2> voisinage = new HashSet<Etat2>();
-
-            for (Etat2 unEtat : etats) {
-                voisinage.addAll(unEtat.getVoisinage());
+            // on calcule la frontière
+            HashSet<Etat2> frontier = new HashSet<Etat2>();
+            for (Etat2 unEtat : trackedStates) {
+                frontier.addAll(unEtat.getFrontier());
             }
 
-            // Parmis ces voisinages on choisit les k meilleurs
+            // On cherche les k meilleurs de la frontière
             HashSet<Etat2> meilleurs_etats = new HashSet<Etat2>();
 
             while (meilleurs_etats.size() < k) {
-                Iterator<Etat2> it = voisinage.iterator();
-                Etat2 etatMax = it.next();
+                Iterator<Etat2> it = frontier.iterator();
+                Etat2 etatMin = it.next();
 
                 while (it.hasNext()) {
-                    Etat2 newEtat = it.next();
-                    if (newEtat.getTotalCost() < etatMax.getTotalCost()) {
-                        etatMax = newEtat;
+                    Etat2 concurrent = it.next();
+                    if (concurrent.getTotalCost() < etatMin.getTotalCost()) {
+                        etatMin = concurrent;
                     }
                 }
 
-                voisinage.remove(etatMax);
-                meilleurs_etats.add(etatMax);
+                frontier.remove(etatMin);
+                meilleurs_etats.add(etatMin);
             }
-            etats = meilleurs_etats;
+            trackedStates = meilleurs_etats;
         }
 
-        Iterator<Etat2> it = etats.iterator();
+        //A la fin on retourne le meilleur état parmi les états traqués
+        Iterator<Etat2> it = trackedStates.iterator();
         Etat2 meilleurEtat = it.next();
         while (it.hasNext()) {
-            Etat2 newEtat = it.next();
-            if (newEtat.getTotalCost() < meilleurEtat.getTotalCost()) {
-                meilleurEtat = newEtat;
+            Etat2 concurrent = it.next();
+            if (concurrent.getTotalCost() < meilleurEtat.getTotalCost()) {
+                meilleurEtat = concurrent;
             }
         }
-        return meilleurEtat;
+        System.out.println("Result LocalBeam=" + meilleurEtat.getCircuit());
+        System.out.println("[FINAL COST]=" + meilleurEtat.getTotalCost());
+        return meilleurEtat.getCircuit();
     }
-
 }
