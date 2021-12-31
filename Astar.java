@@ -36,29 +36,23 @@ public class Astar {
                 }
             }
 
-            //System.out.println("[FRONTIER SIZE]=" + frontier.size());
-            /*for (Etat e : frontier) {
-                System.out.println(e.getVisited());
-            }*/
+            System.out.println("[FRONTIER SIZE]=" + frontier.size());
 
             //On cherche l'état minimum de la frontière
             Iterator<Etat> it = frontier.iterator();
             Etat etatMin = it.next();
             int cn = etatMin.getTotalCost();
             int hn = etatMin.getHeuristiqueMST();
-            hn = etatMin.getHeuristiqueNulle();
-
+            
             while (it.hasNext()) {
                 Etat concurrent = it.next();
                 int new_cn = concurrent.getTotalCost();
                 int new_hn = concurrent.getHeuristiqueMST();
-                new_hn = concurrent.getHeuristiqueNulle();
 
                 if (new_cn+new_hn < cn+hn) {
                     etatMin = concurrent;
                 }
             }
-            //System.out.println("[new cost]=" + etatMin.getTotalCost());
 
             //L'état courant devient l'état minimum
             currentState = etatMin;

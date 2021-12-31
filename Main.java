@@ -12,14 +12,14 @@ public class Main {
         try {
             //Création du graphe
             GrapheComplet graphe = new GrapheComplet(matrice_exemple);
-
+            
             //Application d'Astar
             Astar a = new Astar(graphe, 0);
-            System.out.println(a.compute());
+            a.compute();
 
             //Application de Local Beam
             LocalBeam l = new LocalBeam(graphe, 3);
-            System.out.println(l.compute(2));
+            l.compute(2);
 
         } catch (Exception e) {
             e.printStackTrace();

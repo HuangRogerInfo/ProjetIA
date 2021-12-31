@@ -75,11 +75,14 @@ public class Etat {
      * @throws Exception
      */
     public int getTotalCost() throws Exception {
+        if(visited.size()==0){
+            return 0;
+        }
         int total_cost = 0;
+        total_cost+=g.getPoids(goal,visited.get(0));
         for (int i = 0, j = 1; j < visited.size(); i++, j++) {
             total_cost += g.getPoids(visited.get(i), visited.get(j));
         }
-        total_cost += g.getPoids(visited.getLast(), visited.getFirst());
         return total_cost;
     }
 
@@ -90,9 +93,14 @@ public class Etat {
      * @throws Exception
      */
     public int getHeuristiqueMST() throws Exception {
-        //Si c'est résolu alors le sous graphe contient uniquement la ville_initiale ce qui donne un poids ACM=0
+        //Etat final -> le sous graphe contient uniquement la ville_initiale ce qui donne un poids ACM=0
         if(this.isSolved()){
             return 0;
+        }
+
+        //Etat initial -> on retourne le poids ACM de l'ensemble du graphe
+        if(visited.size()==0){
+            return this.g.getpoidsACM();
         }
 
         //Sinon construction du sous graphe pour estimer le cout du chemin partiel
@@ -112,12 +120,13 @@ public class Etat {
         for (int i = 0, new_i = 0; new_i < new_taille; i++, new_i++) {
             for (int j = 0, new_j = 0; new_j < new_taille; j++, new_j++) {
                 
-                if(toDelete.contains(i)) {
+                while(toDelete.contains(i)) {
                     i++;
                 }
-                else if(toDelete.contains(j)) {
+                while(toDelete.contains(j)) {
                     j++;
                 }
+                //System.out.println(i+"/"+j);
                 new_matrice[new_i][new_j] = g.getPoids(i, j);
             }
         }
