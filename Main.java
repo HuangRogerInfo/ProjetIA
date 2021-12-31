@@ -11,13 +11,17 @@ public class Main {
 
         try {
             //Création du graphe
+            System.out.println("---CREATION DU GRAPHE---");
             GrapheComplet graphe = new GrapheComplet(matrice_exemple);
+            graphe.printMatrice();
             
             //Application d'Astar
+            System.out.println("\n---EXECUTION ASTAR---");
             Astar a = new Astar(graphe, 0);
             a.compute();
 
             //Application de Local Beam
+            System.out.println("\n---EXECUTION LOCAL BEAM---");
             LocalBeam l = new LocalBeam(graphe, 3);
             l.compute(2);
 

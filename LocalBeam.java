@@ -65,8 +65,8 @@ public class LocalBeam {
                 meilleurEtat = concurrent;
             }
         }
-        System.out.println("Result LocalBeam=" + meilleurEtat.getCircuit());
-        System.out.println("[FINAL COST]=" + meilleurEtat.getTotalCost());
+        System.out.println("Result LocalBeam = " + meilleurEtat.getCircuit());
+        System.out.println("[FINAL COST] = " + meilleurEtat.getTotalCost());
         return meilleurEtat.getCircuit();
     }
 }

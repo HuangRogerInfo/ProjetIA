@@ -4,7 +4,10 @@ public class GrapheComplet {
     private int taille;
     private int[][] matrice;
 
-    /* Initialise un graphe complet de taille n avec des poids égals à 1 */
+    /**
+     * Constructeur d'un graphe complet dont les poids valent 1 de taille n
+     * @param n
+     */
     public GrapheComplet(int n) {
         this.taille = n;
         this.matrice = new int[n][n];
@@ -18,7 +21,11 @@ public class GrapheComplet {
         }
     }
 
-    /* Initialise un graphe avec une matrice d'adjacence */
+    /**
+     * Constructeur d'un graphe complet à partir d'une matrice d'adjacence
+     * @param matrice
+     * @throws Exception
+     */
     public GrapheComplet(int[][] matrice) throws Exception {
 
         int nb_ligne = matrice.length;
@@ -36,7 +43,7 @@ public class GrapheComplet {
     }
 
     /**
-     * Retourne le poids de l'arbre couvrant ayant le plus petit poids.
+     * Retourne le poids de l'arbre couvrant minimal
      * 
      * @return un entier
      */
@@ -69,11 +76,16 @@ public class GrapheComplet {
             poids += minimum;
             arbre.add(minimum_id);
         }
-
         return poids;
     }
 
-    /* Modifie le poids de l'arete entre sommet1 et sommet2 */
+    /**
+     * Modifie le poids entre deux sommets
+     * @param sommet1
+     * @param sommet2
+     * @param distance
+     * @throws Exception
+     */
     public void modifierPoids(int sommet1, int sommet2, int distance) throws Exception {
         if (sommet1 >= taille || sommet1 < 0 || sommet2 >= taille || sommet2 < 0) {
             throw new Exception("Probleme d'indice");
@@ -83,7 +95,13 @@ public class GrapheComplet {
         matrice[sommet2][sommet1] = distance;
     }
 
-    /* retourne le poids entre sommet1 et sommet2 */
+    /**
+     * Retourne le poids entre deux sommets
+     * @param sommet1
+     * @param sommet2
+     * @return un entier
+     * @throws Exception
+     */
     public int getPoids(int sommet1, int sommet2) throws Exception {
         if (sommet1 >= taille || sommet1 < 0 || sommet2 >= taille || sommet2 < 0) {
             throw new Exception("Probleme d'indicee");
@@ -92,12 +110,17 @@ public class GrapheComplet {
         return matrice[sommet1][sommet2];
     }
 
-    /* Retourne la taille de la matrice */
+    /**
+     * Retourne la taille du graphe
+     * @return un entier
+     */
     public int getTaille() {
         return taille;
     }
 
-    /* Affiche la matrice d'adjacence */
+    /**
+     * Affiche la matrice d'adjacence du graphe
+     */
     public void printMatrice() {
         for (int i = 0; i < taille; i++) {
             for (int j = 0; j < taille; j++) {

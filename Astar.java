@@ -23,6 +23,7 @@ public class Astar {
      * @throws Exception en cas de depassement d'indice
      */
     public LinkedList<Integer> compute() throws Exception {
+        int size_max_frontiere = 0;
         exploredState.add(currentState);
 
         while (!currentState.isSolved()) {
@@ -36,7 +37,10 @@ public class Astar {
                 }
             }
 
-            System.out.println("[FRONTIER SIZE]=" + frontier.size());
+            //On garde en mémoire la taille de la frontière maximale
+            if(frontier.size()>size_max_frontiere){
+                size_max_frontiere = frontier.size();
+            }
 
             //On cherche l'état minimum de la frontière
             Iterator<Etat> it = frontier.iterator();
@@ -58,8 +62,9 @@ public class Astar {
             currentState = etatMin;
             exploredState.add(currentState);
         }
-        System.out.println("Result Astar=" + currentState.getVisited());
-        System.out.println("[FINAL COST]=" + currentState.getTotalCost());
+        System.out.println("Result Astar = " + currentState.getVisited());
+        System.out.println("[FINAL COST] = " + currentState.getTotalCost());
+        System.out.println("[FRONTIER MAX] = " + size_max_frontiere);
         return currentState.getVisited();
     }
 }
