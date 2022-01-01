@@ -48,7 +48,7 @@ public class Etat2 {
 
         for (int i = 0; i < circuit.size(); i++) {
             for (int j = i + 1; j < circuit.size(); j++) {
-                //Pour toutes paires (i,j) possibles
+                // Pour toutes paires (i,j) possibles
                 LinkedList<Integer> new_list = new LinkedList<Integer>(circuit);
 
                 // On crée un nouveau voisin en inversant l'ordre de parcours entre i et j
@@ -57,11 +57,36 @@ public class Etat2 {
                     new_list.set(w, reversed.get(z));
                 }
 
-                //On l'ajoute à la frontière
+                // On l'ajoute à la frontière
                 frontier.add(new Etat2(g, new_list));
             }
         }
         return frontier;
+    }
+
+    /**
+     * Retourne un état atteignable aléatoire à partir de l'état courant
+     * 
+     * @return un état
+     */
+    public Etat2 mutation() {
+        // Application de 2-opt pour trouver un voisin aleatoire
+        LinkedList<Integer> reversed = new LinkedList<Integer>(circuit);
+        Collections.reverse(reversed);
+
+        int i = (int) Math.random() * (circuit.size() - 1);
+        int j = (int) Math.random() * (circuit.size() - 1);
+
+        LinkedList<Integer> new_list = new LinkedList<Integer>(circuit);
+
+        // On crée un nouveau voisin en inversant l'ordre de parcours entre i et j
+        int delta = circuit.size() - (j + 1);
+        for (int w = i, z = delta; w <= j; w++, z++) {
+            new_list.set(w, reversed.get(z));
+        }
+
+        // On l'ajoute à la frontière
+        return new Etat2(g, new_list);
     }
 
     /**
@@ -79,8 +104,23 @@ public class Etat2 {
         return total_cost;
     }
 
+    public void setVisited(int position, int valeur) throws Exception {
+        if (position < 0 || position >= g.getTaille()) {
+            throw new Exception("Problème d'indice");
+        }
+        this.circuit.set(position, valeur);
+    }
+
+    public int getVisited(int position) throws Exception {
+        if (position < 0 || position >= g.getTaille()) {
+            throw new Exception("Problème d'indice");
+        }
+        return this.circuit.get(position);
+    }
+
     /**
      * Retourne le circuit hamiltonien de l'état courant
+     * 
      * @return une liste d'entier
      */
     public LinkedList<Integer> getCircuit() {

@@ -8,6 +8,7 @@ public class Astar {
 
     /**
      * Constructeur initialisant l'état initial
+     * 
      * @param g
      * @param start
      */
@@ -27,39 +28,44 @@ public class Astar {
         exploredState.add(currentState);
 
         while (!currentState.isSolved()) {
-            //On calcule la frontière
+            // On calcule la frontière
             HashSet<Etat> frontier = new HashSet<Etat>();
             for (Etat e : exploredState) {
                 for (Etat voisin : e.getFrontier()) {
-                    if (!exploredState.contains(voisin)){
+                    if (!exploredState.contains(voisin)) {
                         frontier.add(voisin);
                     }
                 }
             }
 
-            //On garde en mémoire la taille de la frontière maximale
-            if(frontier.size()>size_max_frontiere){
+            // On garde en mémoire la taille de la frontière maximale
+            if (frontier.size() > size_max_frontiere) {
                 size_max_frontiere = frontier.size();
             }
 
-            //On cherche l'état minimum de la frontière
+            // On cherche l'état minimum de la frontière
             Iterator<Etat> it = frontier.iterator();
             Etat etatMin = it.next();
             int cn = etatMin.getTotalCost();
             int hn = etatMin.getHeuristiqueMST();
-            
+
             while (it.hasNext()) {
                 Etat concurrent = it.next();
                 int new_cn = concurrent.getTotalCost();
                 int new_hn = concurrent.getHeuristiqueMST();
 
-                if (new_cn+new_hn < cn+hn) {
+                if (new_cn + new_hn < cn + hn) {
                     etatMin = concurrent;
                 }
             }
 
-            //L'état courant devient l'état minimum
+            // L'état courant devient l'état minimum
             currentState = etatMin;
+            System.out.println("Etat courant=" + currentState.getVisited());
+            cn = currentState.getTotalCost();
+            hn = currentState.getHeuristiqueMST();
+            int total = cn + hn;
+            System.out.println("hn=" + hn + " cn=" + cn + " total=" + total + "\n");
             exploredState.add(currentState);
         }
         System.out.println("Result Astar = " + currentState.getVisited());

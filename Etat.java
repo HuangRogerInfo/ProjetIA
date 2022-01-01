@@ -21,11 +21,12 @@ public class Etat {
 
     /**
      * Constructeur d'un état quelconque
+     * 
      * @param g
      * @param start
      * @param visited
      */
-    public Etat(GrapheComplet g,  int goal, LinkedList<Integer> visited) {
+    public Etat(GrapheComplet g, int goal, LinkedList<Integer> visited) {
         this.g = g;
         this.visited = visited;
         this.goal = goal;
@@ -33,6 +34,7 @@ public class Etat {
 
     /**
      * Retourne vrai si l'état est résolu, faux sinon
+     * 
      * @return un booléen
      */
     public boolean isSolved() {
@@ -41,6 +43,7 @@ public class Etat {
 
     /**
      * Retourne la liste ordonnée des villes visitées
+     * 
      * @return une liste d'entier
      */
     public LinkedList<Integer> getVisited() {
@@ -49,6 +52,7 @@ public class Etat {
 
     /**
      * Retourne l'ensemble des états atteignables à partir de l'état courant
+     * 
      * @return un ensemble d'état
      * @throws Exception
      */
@@ -57,7 +61,7 @@ public class Etat {
 
         for (int j = 0; j < g.getTaille(); j++) {
             if (!visited.contains(j)) {
-                if( j!=goal || (j==goal && visited.size()==g.getTaille()-1)){
+                if (j != goal || (j == goal && visited.size() == g.getTaille() - 1)) {
                     LinkedList<Integer> new_visited = new LinkedList<Integer>(visited);
                     new_visited.add(j);
 
@@ -75,11 +79,11 @@ public class Etat {
      * @throws Exception
      */
     public int getTotalCost() throws Exception {
-        if(visited.size()==0){
+        if (visited.size() == 0) {
             return 0;
         }
         int total_cost = 0;
-        total_cost+=g.getPoids(goal,visited.get(0));
+        total_cost += g.getPoids(goal, visited.get(0));
         for (int i = 0, j = 1; j < visited.size(); i++, j++) {
             total_cost += g.getPoids(visited.get(i), visited.get(j));
         }
@@ -93,53 +97,55 @@ public class Etat {
      * @throws Exception
      */
     public int getHeuristiqueMST() throws Exception {
-        //Etat final -> le sous graphe contient uniquement la ville_initiale ce qui donne un poids ACM=0
-        if(this.isSolved()){
+        // Etat final -> le sous graphe contient uniquement la ville_initiale ce qui
+        // donne un poids ACM=0
+        if (this.isSolved()) {
             return 0;
         }
 
-        //Etat initial -> on retourne le poids ACM de l'ensemble du graphe
-        if(visited.size()==0){
+        // Etat initial -> on retourne le poids ACM de l'ensemble du graphe
+        if (visited.size() == 0) {
             return this.g.getpoidsACM();
         }
 
-        //Sinon construction du sous graphe pour estimer le cout du chemin partiel
+        // Sinon construction du sous graphe pour estimer le cout du chemin partiel
         int ville_actuelle = visited.getLast();
 
-        //On enleve du graphe les villes visités sauf la ville_actuelle
+        // On enleve du graphe les villes visités sauf la ville_actuelle
         HashSet<Integer> toDelete = new HashSet<Integer>();
-        for(int i=0; i<g.getTaille(); i++){
-            if(visited.contains(i) && i!=ville_actuelle){
+        for (int i = 0; i < g.getTaille(); i++) {
+            if (visited.contains(i) && i != ville_actuelle) {
                 toDelete.add(i);
             }
         }
-        
+
         int new_taille = g.getTaille() - visited.size() + 1;
         int[][] new_matrice = new int[new_taille][new_taille];
 
         for (int i = 0, new_i = 0; new_i < new_taille; i++, new_i++) {
             for (int j = 0, new_j = 0; new_j < new_taille; j++, new_j++) {
-                
-                while(toDelete.contains(i)) {
+
+                while (toDelete.contains(i)) {
                     i++;
                 }
-                while(toDelete.contains(j)) {
+                while (toDelete.contains(j)) {
                     j++;
                 }
-                //System.out.println(i+"/"+j);
+                // System.out.println(i+"/"+j);
                 new_matrice[new_i][new_j] = g.getPoids(i, j);
             }
         }
 
-        //On retourne le poids ACM du sous graphe construit
+        // On retourne le poids ACM du sous graphe construit
         return new GrapheComplet(new_matrice).getpoidsACM();
     }
 
     /**
      * Retourne la valeur d'une heuristique nulle
+     * 
      * @return 0
      */
-    public int getHeuristiqueNulle(){
+    public int getHeuristiqueNulle() {
         return 0;
     }
 
