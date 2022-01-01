@@ -14,7 +14,6 @@ public class Genetic {
      * @param k un nombre d'états traqués
      */
     public Genetic(GrapheComplet g, int k) {
-
         int nb_pair = k;
         if (k % 2 != 0) {
             nb_pair++;

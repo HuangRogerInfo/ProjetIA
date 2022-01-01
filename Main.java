@@ -28,7 +28,7 @@ public class Main {
             // Application de Genetic
             System.out.println("\n---EXECUTION GENETIC---");
             Genetic g = new Genetic(graphe, 13);
-            g.compute(0.5, 0.3, 5);
+            g.compute(0.3, 0.5, 10);
 
         } catch (Exception e) {
             e.printStackTrace();
