@@ -30,7 +30,10 @@ public class Genetic {
     }
 
     /**
-     * Retourne un individu de la population aléatoirement en fonction de sa fitness
+     * Retourne un individu aleatoirement proportionnellement a sa fitness
+     * 
+     * @return un etat
+     * @throws Exception
      */
     public int choixAleatoire() throws Exception {
         ArrayList<Float> proba = new ArrayList<Float>();
@@ -52,7 +55,7 @@ public class Genetic {
     }
 
     /**
-     * Crée une liste de couples pour la reproduction en fonction de la fitness
+     * Cree une liste de couples a partir de la population
      * 
      * @return une liste de couple
      * @throws Exception
@@ -74,6 +77,13 @@ public class Genetic {
         return couples;
     }
 
+    /**
+     * Cree une nouvelle population avec une liste de couples
+     * 
+     * @param parents une liste de couple
+     * @return une liste d'etat (individus)
+     * @throws Exception
+     */
     public ArrayList<Etat2> crossover(ArrayList<Couple> parents) throws Exception {
         ArrayList<Etat2> children = new ArrayList<Etat2>();
 
@@ -108,6 +118,15 @@ public class Genetic {
         return children;
     }
 
+    /**
+     * Algorithme de recherche local d'une instance de voyageur de commerce
+     * 
+     * @param mutationRate le % de chance de muter
+     * @param elitistRate  le % des meilleurs de la generation precedente a garder
+     * @param nb_iteration le nombre de generation
+     * @return le meilleur etat apres toutes les generations
+     * @throws Exception
+     */
     public LinkedList<Integer> compute(double mutationRate, double elitistRate, int nb_iteration) throws Exception {
 
         for (int j = 0; j < nb_iteration; j++) {
