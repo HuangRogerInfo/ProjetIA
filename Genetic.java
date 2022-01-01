@@ -1,3 +1,4 @@
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -8,12 +9,13 @@ public class Genetic {
     private int populationSize;
 
     /**
-     * Constructeur initialisant k états aléatoires
+     * Constructeur initialisant une population aleatoire
      * 
      * @param g un graphe
      * @param k un nombre d'états traqués
+     * @throws Exception
      */
-    public Genetic(GrapheComplet g, int k) {
+    public Genetic(GrapheComplet g, int k) throws Exception {
         int nb_pair = k;
         if (k % 2 != 0) {
             nb_pair++;
@@ -22,8 +24,19 @@ public class Genetic {
 
         ArrayList<Etat2> random_etats = new ArrayList<Etat2>();
         while (random_etats.size() < nb_pair) {
-            random_etats.add(new Etat2(g));
+
+            Etat2 random_etat = new Etat2(g);
+            while (random_etats.contains(random_etat)) {
+                random_etat = new Etat2(g);
+            }
+            random_etats.add(random_etat);
         }
+
+        for (Etat2 etat2 : random_etats) {
+            System.out.println(etat2.getCircuit() + " (" + etat2.getTotalCost() + ")");
+        }
+        System.out.println("/");
+
         this.population = random_etats;
         this.g = g;
     }
@@ -34,19 +47,32 @@ public class Genetic {
      * @return un etat
      * @throws Exception
      */
-    public int choixAleatoire() throws Exception {
+    public int choixAleatoire(ArrayList<Etat2> population) throws Exception {
         ArrayList<Float> proba = new ArrayList<Float>();
-        float somme = 0;
 
-        for (int i = 0; i < populationSize; i++) {
-            int cout_i = population.get(i).getTotalCost();
-            somme += cout_i;
-            proba.add(somme);
+        int somme_cout = 0;
+        for (int i = 0; i < population.size(); i++) {
+            somme_cout += population.get(i).getTotalCost();
         }
 
-        double rand = Collections.max(proba) + Collections.min(proba) - (Math.random() * somme);
+        // Tableau de probabilité en fonction de la fitness
+        for (int i = 0; i < population.size(); i++) {
+            float cout_i = 1 - (population.get(i).getTotalCost() / somme_cout);
+            proba.add(cout_i);
+        }
+
+        // Nombre aleatoire entre 0 et somme du tableau
+        float range = 0;
+        for (int i = 0; i < proba.size(); i++) {
+            range += proba.get(i);
+        }
+        double rand = Math.random() * range;
+
+        // Choix de l'individu
+        float cumul = 0;
         for (int j = 0; j < proba.size(); j++) {
-            if (rand > proba.get(j)) {
+            cumul += proba.get(j).floatValue();
+            if (rand < cumul) {
                 return j;
             }
         }
@@ -64,14 +90,19 @@ public class Genetic {
 
         Etat2 father = new Etat2(g);
         Etat2 mother = new Etat2(g);
+        ArrayList<Etat2> copy = new ArrayList<Etat2>(population);
 
         while (couples.size() != populationSize / 2) {
-            do {
-                father = population.get(choixAleatoire());
-                mother = population.get(choixAleatoire());
-            } while (!father.equals(mother));
+
+            father = copy.get(choixAleatoire(copy));
+            copy.remove(father);
+            mother = copy.get(choixAleatoire(copy));
 
             couples.add(new Couple(father, mother));
+        }
+
+        for (Couple c : couples) {
+            System.out.println(c);
         }
         return couples;
     }
@@ -87,34 +118,65 @@ public class Genetic {
         ArrayList<Etat2> children = new ArrayList<Etat2>();
 
         for (Couple c : parents) {
-            Etat2 enfant1 = c.getFather();
-            Etat2 enfant2 = c.getMother();
+            Couple enfants = getChildren(c.getFather(), c.getMother());
 
-            for (int i = 0; i < g.getTaille(); i++) {
-                // Father
-                if (Math.random() > 0.5) {
-                    enfant1.setVisited(i, c.getFather().getVisited(i));
-                }
-                // Mother
-                else {
-                    enfant1.setVisited(i, c.getMother().getVisited(i));
-                }
-            }
+            Etat2 enfant1 = enfants.getFather();
+            Etat2 enfant2 = enfants.getMother();
 
-            for (int i = 0; i < g.getTaille(); i++) {
-                // Father
-                if (Math.random() > 0.5) {
-                    enfant2.setVisited(i, c.getFather().getVisited(i));
-                }
-                // Mother
-                else {
-                    enfant2.setVisited(i, c.getMother().getVisited(i));
-                }
-            }
+            System.out.println("Enfants cree");
+            System.out.println(enfant1.getCircuit());
+            System.out.println(enfant2.getCircuit());
+
             children.add(enfant1);
             children.add(enfant2);
         }
+
         return children;
+    }
+
+    public Couple getChildren(Etat2 pere, Etat2 mere) throws Exception {
+        int decoupage = (int) (Math.random() * (g.getTaille() - 1));
+        System.out.println("decoupage=" + decoupage);
+
+        Etat2 enfant1 = new Etat2(g);
+        ArrayList<Integer> contient = new ArrayList<Integer>();
+
+        for (int i = 0; i < decoupage; i++) {
+            enfant1.setVisited(i, pere.getVisited(i));
+            contient.add(pere.getVisited(i));
+        }
+
+        int decalage = decoupage;
+
+        for (int j = 0; j < mere.getCircuit().size(); j++) {
+
+            if (!contient.contains(mere.getVisited(j))) {
+                enfant1.setVisited(decalage, mere.getVisited(j));
+                contient.add(mere.getVisited(j));
+                decalage++;
+            }
+        }
+
+        Etat2 enfant2 = new Etat2(g);
+        ArrayList<Integer> contient2 = new ArrayList<Integer>();
+
+        for (int i = 0; i < decoupage; i++) {
+            enfant1.setVisited(i, mere.getVisited(i));
+            contient2.add(mere.getVisited(i));
+        }
+
+        decalage = decoupage;
+
+        for (int j = 0; j < pere.getCircuit().size(); j++) {
+
+            if (!contient2.contains(pere.getVisited(j))) {
+                enfant1.setVisited(decalage, pere.getVisited(j));
+                contient2.add(pere.getVisited(j));
+                decalage++;
+            }
+        }
+
+        return new Couple(enfant1, enfant2);
     }
 
     /**
@@ -134,13 +196,14 @@ public class Genetic {
 
             // Ces enfant subissent aléatoirement des mutations
             for (int i = 0; i < nwPopulation.size(); i++) {
-                if (Math.random() > mutationRate) {
+                if (Math.random() < mutationRate) {
                     nwPopulation.set(i, nwPopulation.get(i).mutation());
                 }
             }
 
             // On stocke dans un tableau % des meilleurs de la génération précédente
-            int nb_conserve = (int) elitistRate * population.size();
+            int nb_conserve = (int) (elitistRate * population.size());
+
             ArrayList<Etat2> meilleurs_etats = new ArrayList<Etat2>();
             ArrayList<Etat2> copy = new ArrayList<Etat2>(population);
 
@@ -169,6 +232,23 @@ public class Genetic {
 
             // On passe à la génération suivante
             population = nwPopulation;
+
+            System.out.println("new_generation :");
+            for (Etat2 e : population) {
+                System.out.println(e.getCircuit() + " (" + e.getTotalCost() + ")");
+            }
+
+            // A la fin on retourne le meilleur état parmi les états traqués
+            Etat2 meilleurEtat = population.get(0);
+            for (int i = 0; i < populationSize; i++) {
+                Etat2 concurrent = population.get(i);
+                if (concurrent.getTotalCost() < meilleurEtat.getTotalCost()) {
+                    meilleurEtat = concurrent;
+                }
+            }
+            System.out.println("Result genetic = " + meilleurEtat.getCircuit());
+            System.out.println("[FINAL COST] = " + meilleurEtat.getTotalCost());
+
         }
 
         // A la fin on retourne le meilleur état parmi les états traqués

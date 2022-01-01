@@ -14,4 +14,16 @@ public class Couple {
     public Etat2 getMother() {
         return e2;
     }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        try {
+            return "(" + e1.getCircuit() + "," + e2.getCircuit() + ")";
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "?";
+    }
 }

@@ -70,22 +70,14 @@ public class Etat2 {
      * @return un état
      */
     public Etat2 mutation() {
-        // Application de 2-opt pour trouver un voisin aleatoire
-        LinkedList<Integer> reversed = new LinkedList<Integer>(circuit);
-        Collections.reverse(reversed);
-
         int i = (int) Math.random() * (circuit.size() - 1);
         int j = (int) Math.random() * (circuit.size() - 1);
 
         LinkedList<Integer> new_list = new LinkedList<Integer>(circuit);
 
-        // On crée un nouveau voisin en inversant l'ordre de parcours entre i et j
-        int delta = circuit.size() - (j + 1);
-        for (int w = i, z = delta; w <= j; w++, z++) {
-            new_list.set(w, reversed.get(z));
-        }
+        new_list.set(i, circuit.get(j));
+        new_list.set(j, circuit.get(i));
 
-        // On l'ajoute à la frontière
         return new Etat2(g, new_list);
     }
 
