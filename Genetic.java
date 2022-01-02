@@ -1,6 +1,4 @@
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 
 public class Genetic {
@@ -12,7 +10,7 @@ public class Genetic {
      * Constructeur initialisant une population aleatoire
      * 
      * @param g un graphe
-     * @param k un nombre d'Ã©tats traquÃ©s
+     * @param k la taille de la population
      * @throws Exception
      */
     public Genetic(GrapheComplet g, int k) throws Exception {
@@ -21,6 +19,7 @@ public class Genetic {
             nb_pair++;
         }
         this.populationSize = nb_pair;
+
         ArrayList<Etat2> random_etats = new ArrayList<Etat2>();
         while (random_etats.size() < nb_pair) {
             Etat2 random_etat = new Etat2(g);
@@ -29,46 +28,12 @@ public class Genetic {
             }
             random_etats.add(random_etat);
         }
-        for (Etat2 etat2 : random_etats) {
-            System.out.println(etat2.getCircuit() + " (" + etat2.getTotalCost() + ")");
+        System.out.println("Population de depart : ");
+        for (Etat2 e: random_etats) {
+            System.out.println(e);
         }
-        System.out.println("/");
         this.population = random_etats;
         this.g = g;
-    }
-
-    /**
-     * Retourne un individu aleatoirement proportionnellement a sa fitness
-     * 
-     * @return un etat
-     * @throws Exception
-     */
-    public int choixAleatoire(ArrayList<Etat2> population) throws Exception {
-        ArrayList<Float> proba = new ArrayList<Float>();
-        int somme_cout = 0;
-        for (int i = 0; i < population.size(); i++) {
-            somme_cout += population.get(i).getTotalCost();
-        }
-        // Tableau de probabilitÃ© en fonction de la fitness
-        for (int i = 0; i < population.size(); i++) {
-            float cout_i = 1 - (population.get(i).getTotalCost() / somme_cout);
-            proba.add(cout_i);
-        }
-        // Nombre aleatoire entre 0 et somme du tableau
-        float range = 0;
-        for (int i = 0; i < proba.size(); i++) {
-            range += proba.get(i);
-        }
-        double rand = Math.random() * range;
-        // Choix de l'individu
-        float cumul = 0;
-        for (int j = 0; j < proba.size(); j++) {
-            cumul += proba.get(j).floatValue();
-            if (rand < cumul) {
-                return j;
-            }
-        }
-        return proba.size() - 1;
     }
 
     /**
@@ -88,6 +53,7 @@ public class Genetic {
             mother = copy.get(choixAleatoire(copy));
             couples.add(new Couple(father, mother));
         }
+        System.out.println("Couples formes=");
         for (Couple c : couples) {
             System.out.println(c);
         }
@@ -104,50 +70,13 @@ public class Genetic {
     public ArrayList<Etat2> crossover(ArrayList<Couple> parents) throws Exception {
         ArrayList<Etat2> children = new ArrayList<Etat2>();
         for (Couple c : parents) {
-            Couple enfants = getChildren(c.getFather(), c.getMother());
-            Etat2 enfant1 = enfants.getFather();
-            Etat2 enfant2 = enfants.getMother();
-            System.out.println("Enfants cree");
-            System.out.println(enfant1.getCircuit());
-            System.out.println(enfant2.getCircuit());
+            Couple enfants = formerEnfants(c.getC1(), c.getC2());
+            Etat2 enfant1 = enfants.getC1();
+            Etat2 enfant2 = enfants.getC2();
             children.add(enfant1);
             children.add(enfant2);
         }
         return children;
-    }
-
-    public Couple getChildren(Etat2 pere, Etat2 mere) throws Exception {
-        int decoupage = (int) (Math.random() * (g.getTaille() - 1));
-        System.out.println("decoupage=" + decoupage);
-        Etat2 enfant1 = new Etat2(g);
-        ArrayList<Integer> contient = new ArrayList<Integer>();
-        for (int i = 0; i < decoupage; i++) {
-            enfant1.setVisited(i, pere.getVisited(i));
-            contient.add(pere.getVisited(i));
-        }
-        int decalage = decoupage;
-        for (int j = 0; j < mere.getCircuit().size(); j++) {
-            if (!contient.contains(mere.getVisited(j))) {
-                enfant1.setVisited(decalage, mere.getVisited(j));
-                contient.add(mere.getVisited(j));
-                decalage++;
-            }
-        }
-        Etat2 enfant2 = new Etat2(g);
-        ArrayList<Integer> contient2 = new ArrayList<Integer>();
-        for (int i = 0; i < decoupage; i++) {
-            enfant2.setVisited(i, mere.getVisited(i));
-            contient2.add(mere.getVisited(i));
-        }
-        decalage = decoupage;
-        for (int j = 0; j < pere.getCircuit().size(); j++) {
-            if (!contient2.contains(pere.getVisited(j))) {
-                enfant2.setVisited(decalage, pere.getVisited(j));
-                contient2.add(pere.getVisited(j));
-                decalage++;
-            }
-        }
-        return new Couple(enfant1, enfant2);
     }
 
     /**
@@ -160,17 +89,28 @@ public class Genetic {
      * @throws Exception
      */
     public LinkedList<Integer> compute(double mutationRate, double elitistRate, int nb_iteration) throws Exception {
+        //A chaque itération
         for (int j = 0; j < nb_iteration; j++) {
-            // On fait une selection en fonction de la fitness puis on crÃ©e des enfants
+            System.out.println("\nGENERATION "+j);
+            System.out.println("Etats initiaux :");
+            for (Etat2 e : population) {
+                System.out.println(e);
+            }
+            // On fait une selection en fonction de la fitness puis on forme des enfants
             ArrayList<Etat2> nwPopulation = crossover(selection());
-            // Ces enfant subissent alÃ©atoirement des mutations
+            System.out.println("Nouvelle population :");
+            for (Etat2 e : nwPopulation) {
+                System.out.println(e.getCircuit() + " (" + e.getTotalCost() + ")");
+            }
+            // Ces enfant subissent aleatoirement des mutations
             for (int i = 0; i < nwPopulation.size(); i++) {
                 if (Math.random() < mutationRate) {
                     nwPopulation.set(i, nwPopulation.get(i).mutation());
                 }
             }
-            // On stocke dans un tableau % des meilleurs de la gÃ©nÃ©ration prÃ©cÃ©dente
+            // On stocke dans un tableau un % des meilleurs de la generation precedente
             int nb_conserve = (int) (elitistRate * population.size());
+            
             ArrayList<Etat2> meilleurs_etats = new ArrayList<Etat2>();
             ArrayList<Etat2> copy = new ArrayList<Etat2>(population);
             while (meilleurs_etats.size() != nb_conserve) {
@@ -184,33 +124,25 @@ public class Genetic {
                 copy.remove(etatMin);
                 meilleurs_etats.add(etatMin);
             }
-            // On garde ce % de meilleurs dans la gÃ©nÃ©ration suivante
-            LinkedList<Integer> indice_aleatoire = new LinkedList<Integer>();
-            for (int i = 0; i < populationSize; i++) {
-                indice_aleatoire.add(i);
-            }
-            Collections.shuffle(indice_aleatoire);
-            for (int i = 0; i < nb_conserve; i++) {
-                nwPopulation.set(indice_aleatoire.get(i), meilleurs_etats.get(i));
-            }
-            // On passe Ã la gÃ©nÃ©ration suivante
-            population = nwPopulation;
-            System.out.println("new_generation :");
-            for (Etat2 e : population) {
-                System.out.println(e.getCircuit() + " (" + e.getTotalCost() + ")");
-            }
-            // A la fin on retourne le meilleur Ã©tat parmi les Ã©tats traquÃ©s
-            Etat2 meilleurEtat = population.get(0);
-            for (int i = 0; i < populationSize; i++) {
-                Etat2 concurrent = population.get(i);
-                if (concurrent.getTotalCost() < meilleurEtat.getTotalCost()) {
-                    meilleurEtat = concurrent;
+            //Ce % de meilleurs remplacent les pires de la nouvelle generation
+            ArrayList<Etat2> copy2 = new ArrayList<Etat2>(nwPopulation);
+            for(int i = 0; i<meilleurs_etats.size();i++){
+                Etat2 etatMax = copy2.get(0);
+                for (int z = 0; z < copy2.size(); z++) {
+                    Etat2 concurrent = copy2.get(z);
+                    if (concurrent.getTotalCost() > etatMax.getTotalCost()) {
+                        etatMax = concurrent;
+                    }
                 }
+                copy2.remove(etatMax);
+                nwPopulation.remove(etatMax);
+                nwPopulation.add(meilleurs_etats.get(i));
             }
-            System.out.println("Result genetic = " + meilleurEtat.getCircuit());
-            System.out.println("[FINAL COST] = " + meilleurEtat.getTotalCost());
+            // On passe a la generation suivante
+            population = nwPopulation;
         }
-        // A la fin on retourne le meilleur Ã©tat parmi les Ã©tats traquÃ©s
+
+        // A la fin on retourne le meilleur etat de la population finale
         Etat2 meilleurEtat = population.get(0);
         for (int i = 0; i < populationSize; i++) {
             Etat2 concurrent = population.get(i);
@@ -218,8 +150,84 @@ public class Genetic {
                 meilleurEtat = concurrent;
             }
         }
-        System.out.println("Result genetic = " + meilleurEtat.getCircuit());
+        System.out.println("\nResult genetic = " + meilleurEtat.getCircuit());
         System.out.println("[FINAL COST] = " + meilleurEtat.getTotalCost());
         return meilleurEtat.getCircuit();
+    }
+
+    /**
+     * Retourne un individu aleatoirement proportionnellement a sa fitness
+     * @param population
+     * @return un indice
+     * @throws Exception
+     */
+    public int choixAleatoire(ArrayList<Etat2> population) throws Exception {
+        int somme_cout = 0;
+        for (int i = 0; i < population.size(); i++) {
+            somme_cout += population.get(i).getTotalCost();
+        }
+        // Tableau de probabilite en fonction de la fitness
+        ArrayList<Float> proba = new ArrayList<Float>();
+        float somme_proba = 0;
+        for (int i = 0; i < population.size(); i++) {
+            float fitness_score = 1 - (population.get(i).getTotalCost() / somme_cout);
+            somme_proba += fitness_score;
+            proba.add(fitness_score);
+        }
+        // Nombre aleatoire entre 0 et somme du tableau
+        double rand = Math.random() * somme_proba;
+        // Choix de l'individu
+        float cumul = 0;
+        for (int j = 0; j < proba.size(); j++) {
+            cumul += (float) proba.get(j);
+            if (rand < cumul) {
+                return j;
+            }
+        }
+        return proba.size() - 1;
+    }
+
+    /**
+     * Crée deux enfants à partir d'un père et d'une mère
+     * @param pere
+     * @param mere
+     * @return un couple
+     * @throws Exception
+     */
+    public Couple formerEnfants(Etat2 pere, Etat2 mere) throws Exception {
+        int decoupage = (int) (Math.floor(Math.random() * g.getTaille()));
+        
+        Etat2 enfant1 = new Etat2(g);
+        ArrayList<Integer> contenuPere = new ArrayList<Integer>();
+        for (int i = 0; i < decoupage; i++) {
+            enfant1.setVisited(i, pere.getVisited(i));
+            contenuPere.add(pere.getVisited(i));
+        }
+
+        int start_insertion = decoupage;
+        for (int j = 0; j < mere.getCircuit().size(); j++) {
+            if (!contenuPere.contains(mere.getVisited(j))) {
+                enfant1.setVisited(start_insertion, mere.getVisited(j));
+                contenuPere.add(mere.getVisited(j));
+                start_insertion++;
+            }
+        }
+
+        Etat2 enfant2 = new Etat2(g);
+        ArrayList<Integer> contenuMere = new ArrayList<Integer>();
+        for (int i = 0; i < decoupage; i++) {
+            enfant2.setVisited(i, mere.getVisited(i));
+            contenuMere.add(mere.getVisited(i));
+        }
+
+        start_insertion = decoupage;
+        for (int j = 0; j < pere.getCircuit().size(); j++) {
+            if (!contenuMere.contains(pere.getVisited(j))) {
+                enfant2.setVisited(start_insertion, pere.getVisited(j));
+                contenuMere.add(pere.getVisited(j));
+                start_insertion++;
+            }
+        }
+        return new Couple(enfant1, enfant2);
     }
 }

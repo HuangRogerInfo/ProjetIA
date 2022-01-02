@@ -1,29 +1,22 @@
 public class Couple {
-    private Etat2 e1;
-    private Etat2 e2;
+    private Etat2 C1;
+    private Etat2 C2;
 
-    public Couple(Etat2 e1, Etat2 e2) {
-        this.e1 = e1;
-        this.e2 = e2;
+    public Couple(Etat2 C1, Etat2 C2) {
+        this.C1 = C1;
+        this.C2 = C2;
     }
 
-    public Etat2 getFather() {
-        return e1;
+    public Etat2 getC1() {
+        return C1;
     }
 
-    public Etat2 getMother() {
-        return e2;
+    public Etat2 getC2() {
+        return C2;
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        try {
-            return "(" + e1.getCircuit() + "," + e2.getCircuit() + ")";
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return "?";
+        return "(" + C1.getCircuit().toString() + "," + C2.getCircuit().toString() + ")";
     }
 }

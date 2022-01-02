@@ -14,23 +14,21 @@ public class Main {
             System.out.println("---CREATION DU GRAPHE---");
             GrapheComplet graphe = new GrapheComplet(matrice_exemple);
             graphe.printMatrice();
-
-            /*
-             * // Application d'Astar
-             * System.out.println("\n---EXECUTION ASTAR---");
-             * Astar a = new Astar(graphe, 0);
-             * a.compute();
-             * 
-             * // Application de Local Beam
-             * System.out.println("\n---EXECUTION LOCAL BEAM---");
-             * LocalBeam l = new LocalBeam(graphe, 3);
-             * l.compute(2);
-             */
+            
+            // Application d'Astar
+            System.out.println("\n---EXECUTION ASTAR---");
+            Astar a = new Astar(graphe, 0);
+            a.compute();
+            
+            // Application de Local Beam
+            System.out.println("\n---EXECUTION LOCAL BEAM---");
+            LocalBeam l = new LocalBeam(graphe, 3);
+            l.compute(2);
 
             // Application de Genetic
             System.out.println("\n---EXECUTION GENETIC---");
-            Genetic g = new Genetic(graphe, 4);
-            g.compute(0.2, 0.5, 3);
+            Genetic g = new Genetic(graphe, 5);
+            g.compute(0.2, 0.5, 5);
 
         } catch (Exception e) {
             e.printStackTrace();

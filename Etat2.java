@@ -130,4 +130,16 @@ public class Etat2 {
         Etat2 p = (Etat2) o;
         return (circuit.equals(p.getCircuit()));
     }
+
+    @Override
+    public String toString() {
+        int total_cost = 0;
+        try {  
+            total_cost = this.getTotalCost();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this.circuit.toString() + " (" + total_cost + ")";
+    }
 }
