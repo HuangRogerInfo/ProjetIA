@@ -26,6 +26,9 @@ public class Main {
 
         // MATRICE 1
         try {
+            long startTime;
+            long endTime;
+
             // Création du graphe
             System.out.println("---CREATION DU GRAPHE---");
             GrapheComplet graphe = new GrapheComplet(matrice_exemple);
@@ -33,18 +36,27 @@ public class Main {
 
             // Application d'Astar
             System.out.println("\n---EXECUTION ASTAR---");
+            startTime = System.currentTimeMillis();
             Astar a = new Astar(graphe, 0);
             a.compute();
+            endTime = System.currentTimeMillis();
+            System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime) + "ms");
 
             // Application de Local Beam
             System.out.println("\n---EXECUTION LOCAL BEAM---");
+            startTime = System.currentTimeMillis();
             LocalBeam l = new LocalBeam(graphe, 3);
             l.compute(10);
+            endTime = System.currentTimeMillis();
+            System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime)+ "ms");
 
             // Application de Genetic
             System.out.println("\n---EXECUTION GENETIC---");
+            startTime = System.currentTimeMillis();
             Genetic g = new Genetic(graphe, 5);
             g.compute(0.2, 0.3, 10);
+            endTime = System.currentTimeMillis();
+            System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime)+ "ms");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,6 +64,9 @@ public class Main {
 
         // MATRICE 2
         try {
+            long startTime;
+            long endTime;
+            
             // Création du graphe
             System.out.println("\n---CREATION DU GRAPHE---");
             GrapheComplet graphe2 = new GrapheComplet(matrice_exemple2);
@@ -59,13 +74,19 @@ public class Main {
 
             // Application de Local Beam
             System.out.println("\n---EXECUTION LOCAL BEAM---");
+            startTime = System.currentTimeMillis();
             LocalBeam l = new LocalBeam(graphe2, 3);
             l.compute(10);
+            endTime = System.currentTimeMillis();
+            System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime)+ "ms");
 
             // Application de Genetic
             System.out.println("\n---EXECUTION GENETIC---");
+            startTime = System.currentTimeMillis();
             Genetic g = new Genetic(graphe2, 5);
             g.compute(0.2, 0.3, 10);
+            endTime = System.currentTimeMillis();
+            System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime)+ "ms");
 
         } catch (Exception e) {
             e.printStackTrace();

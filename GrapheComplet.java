@@ -6,6 +6,7 @@ public class GrapheComplet {
 
     /**
      * Constructeur d'un graphe complet dont les poids valent 1 de taille n
+     * 
      * @param n
      */
     public GrapheComplet(int n) {
@@ -23,6 +24,7 @@ public class GrapheComplet {
 
     /**
      * Constructeur d'un graphe complet à partir d'une matrice d'adjacence
+     * 
      * @param matrice
      * @throws Exception
      */
@@ -81,6 +83,7 @@ public class GrapheComplet {
 
     /**
      * Modifie le poids entre deux sommets
+     * 
      * @param sommet1
      * @param sommet2
      * @param distance
@@ -97,6 +100,7 @@ public class GrapheComplet {
 
     /**
      * Retourne le poids entre deux sommets
+     * 
      * @param sommet1
      * @param sommet2
      * @return un entier
@@ -112,6 +116,7 @@ public class GrapheComplet {
 
     /**
      * Retourne la taille du graphe
+     * 
      * @return un entier
      */
     public int getTaille() {
@@ -124,7 +129,7 @@ public class GrapheComplet {
     public void printMatrice() {
         for (int i = 0; i < taille; i++) {
             for (int j = 0; j < taille; j++) {
-                System.out.print(matrice[i][j] + " ");
+                System.out.print(matrice[i][j] + "\t");
             }
             System.out.println("");
         }
