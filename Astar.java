@@ -61,11 +61,11 @@ public class Astar {
 
             // L'état courant devient l'état minimum
             currentState = etatMin;
-            System.out.println("Etat courant=" + currentState.getVisited());
-            int cn = currentState.getTotalCost();
-            int hn = currentState.getHeuristiqueMST();
-            int total = cn + hn;
-            System.out.println("hn=" + hn + " cn=" + cn + " total=" + total + "\n");
+            // System.out.println("Etat courant=" + currentState.getVisited());
+            // int cn = currentState.getTotalCost();
+            // int hn = currentState.getHeuristiqueMST();
+            // int total = cn + hn;
+            // System.out.println("hn=" + hn + " cn=" + cn + " total=" + total + "\n");
             exploredState.add(currentState);
         }
         System.out.println("Result Astar = " + currentState.getVisited());

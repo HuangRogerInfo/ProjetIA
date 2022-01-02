@@ -28,10 +28,7 @@ public class Genetic {
             }
             random_etats.add(random_etat);
         }
-        System.out.println("Population de depart : ");
-        for (Etat2 e: random_etats) {
-            System.out.println(e);
-        }
+
         this.population = random_etats;
         this.g = g;
     }
@@ -52,10 +49,6 @@ public class Genetic {
             copy.remove(father);
             mother = copy.get(choixAleatoire(copy));
             couples.add(new Couple(father, mother));
-        }
-        System.out.println("Couples formes=");
-        for (Couple c : couples) {
-            System.out.println(c);
         }
         return couples;
     }
@@ -89,31 +82,21 @@ public class Genetic {
      * @throws Exception
      */
     public LinkedList<Integer> compute(double mutationRate, double elitistRate, int nb_iteration) throws Exception {
-        //A chaque itération
+        // A chaque itération
         for (int j = 0; j < nb_iteration; j++) {
-            System.out.println("\nGENERATION "+j);
-            System.out.println("Etats initiaux :");
-            for (Etat2 e : population) {
-                System.out.println(e);
-            }
             // On fait une selection en fonction de la fitness puis on forme des enfants
             ArrayList<Etat2> nwPopulation = crossover(selection());
-            System.out.println("Nouvelle population :");
-            for (Etat2 e : nwPopulation) {
-                System.out.println(e.getCircuit() + " (" + e.getTotalCost() + ")");
-            }
             // Ces enfant subissent aleatoirement des mutations
             for (int i = 0; i < nwPopulation.size(); i++) {
                 if (Math.random() < mutationRate) {
                     Etat2 before = nwPopulation.get(i);
                     Etat2 after = before.mutation();
-                    System.out.println("mutated from" +before+after );
                     nwPopulation.set(i, after);
                 }
             }
             // On stocke dans un tableau un % des meilleurs de la generation precedente
             int nb_conserve = (int) (elitistRate * population.size());
-            
+
             ArrayList<Etat2> meilleurs_etats = new ArrayList<Etat2>();
             ArrayList<Etat2> copy = new ArrayList<Etat2>(population);
             while (meilleurs_etats.size() != nb_conserve) {
@@ -127,9 +110,9 @@ public class Genetic {
                 copy.remove(etatMin);
                 meilleurs_etats.add(etatMin);
             }
-            //Ce % de meilleurs remplacent les pires de la nouvelle generation
+            // Ce % de meilleurs remplacent les pires de la nouvelle generation
             ArrayList<Etat2> copy2 = new ArrayList<Etat2>(nwPopulation);
-            for(int i = 0; i<meilleurs_etats.size();i++){
+            for (int i = 0; i < meilleurs_etats.size(); i++) {
                 Etat2 etatMax = copy2.get(0);
                 for (int z = 0; z < copy2.size(); z++) {
                     Etat2 concurrent = copy2.get(z);
@@ -153,13 +136,14 @@ public class Genetic {
                 meilleurEtat = concurrent;
             }
         }
-        System.out.println("\nResult genetic = " + meilleurEtat.getCircuit());
+        System.out.println("Result genetic = " + meilleurEtat.getCircuit());
         System.out.println("[FINAL COST] = " + meilleurEtat.getTotalCost());
         return meilleurEtat.getCircuit();
     }
 
     /**
      * Retourne un individu aleatoirement proportionnellement a sa fitness
+     * 
      * @param population
      * @return un indice
      * @throws Exception
@@ -193,6 +177,7 @@ public class Genetic {
 
     /**
      * Crée deux enfants à partir d'un père et d'une mère
+     * 
      * @param pere
      * @param mere
      * @return un couple
@@ -200,7 +185,7 @@ public class Genetic {
      */
     public Couple formerEnfants(Etat2 pere, Etat2 mere) throws Exception {
         int decoupage = (int) (Math.floor(Math.random() * g.getTaille()));
-        
+
         Etat2 enfant1 = new Etat2(g);
         ArrayList<Integer> contenuPere = new ArrayList<Integer>();
         for (int i = 0; i < decoupage; i++) {
