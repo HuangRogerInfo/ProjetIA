@@ -65,13 +65,14 @@ public class Etat2 {
     }
 
     /**
-     * Retourne un état atteignable aléatoire à partir de l'état courant
+     * Retourne une mutation proche de l'etat d'origine
      * 
-     * @return un état
+     * @return un etat
      */
     public Etat2 mutation() {
-        int i = (int) Math.random() * (circuit.size() - 1);
-        int j = (int) Math.random() * (circuit.size() - 1);
+
+        int i = (int) (Math.floor(Math.random() * circuit.size()));
+        int j = (int) (Math.floor(Math.random() * circuit.size()));
 
         LinkedList<Integer> new_list = new LinkedList<Integer>(circuit);
 
@@ -96,14 +97,26 @@ public class Etat2 {
         return total_cost;
     }
 
-    public void setVisited(int position, int valeur) throws Exception {
+    /**
+     * Modifie un noeud du circuit
+     * @param position
+     * @param valeur
+     * @throws Exception
+     */
+    public void setSommetCircuit(int position, int valeur) throws Exception {
         if (position < 0 || position >= g.getTaille()) {
             throw new Exception("Problème d'indice");
         }
         this.circuit.set(position, valeur);
     }
 
-    public int getVisited(int position) throws Exception {
+    /**
+     * Retourne un noeud du circuit
+     * @param position
+     * @return un entier
+     * @throws Exception
+     */
+    public int getSommetCircuit(int position) throws Exception {
         if (position < 0 || position >= g.getTaille()) {
             throw new Exception("Problème d'indice");
         }

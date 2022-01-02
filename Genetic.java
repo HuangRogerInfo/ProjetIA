@@ -105,7 +105,10 @@ public class Genetic {
             // Ces enfant subissent aleatoirement des mutations
             for (int i = 0; i < nwPopulation.size(); i++) {
                 if (Math.random() < mutationRate) {
-                    nwPopulation.set(i, nwPopulation.get(i).mutation());
+                    Etat2 before = nwPopulation.get(i);
+                    Etat2 after = before.mutation();
+                    System.out.println("mutated from" +before+after );
+                    nwPopulation.set(i, after);
                 }
             }
             // On stocke dans un tableau un % des meilleurs de la generation precedente
@@ -176,6 +179,7 @@ public class Genetic {
         }
         // Nombre aleatoire entre 0 et somme du tableau
         double rand = Math.random() * somme_proba;
+
         // Choix de l'individu
         float cumul = 0;
         for (int j = 0; j < proba.size(); j++) {
@@ -200,15 +204,15 @@ public class Genetic {
         Etat2 enfant1 = new Etat2(g);
         ArrayList<Integer> contenuPere = new ArrayList<Integer>();
         for (int i = 0; i < decoupage; i++) {
-            enfant1.setVisited(i, pere.getVisited(i));
-            contenuPere.add(pere.getVisited(i));
+            enfant1.setSommetCircuit(i, pere.getSommetCircuit(i));
+            contenuPere.add(pere.getSommetCircuit(i));
         }
 
         int start_insertion = decoupage;
         for (int j = 0; j < mere.getCircuit().size(); j++) {
-            if (!contenuPere.contains(mere.getVisited(j))) {
-                enfant1.setVisited(start_insertion, mere.getVisited(j));
-                contenuPere.add(mere.getVisited(j));
+            if (!contenuPere.contains(mere.getSommetCircuit(j))) {
+                enfant1.setSommetCircuit(start_insertion, mere.getSommetCircuit(j));
+                contenuPere.add(mere.getSommetCircuit(j));
                 start_insertion++;
             }
         }
@@ -216,15 +220,15 @@ public class Genetic {
         Etat2 enfant2 = new Etat2(g);
         ArrayList<Integer> contenuMere = new ArrayList<Integer>();
         for (int i = 0; i < decoupage; i++) {
-            enfant2.setVisited(i, mere.getVisited(i));
-            contenuMere.add(mere.getVisited(i));
+            enfant2.setSommetCircuit(i, mere.getSommetCircuit(i));
+            contenuMere.add(mere.getSommetCircuit(i));
         }
 
         start_insertion = decoupage;
         for (int j = 0; j < pere.getCircuit().size(); j++) {
-            if (!contenuMere.contains(pere.getVisited(j))) {
-                enfant2.setVisited(start_insertion, pere.getVisited(j));
-                contenuMere.add(pere.getVisited(j));
+            if (!contenuMere.contains(pere.getSommetCircuit(j))) {
+                enfant2.setSommetCircuit(start_insertion, pere.getSommetCircuit(j));
+                contenuMere.add(pere.getSommetCircuit(j));
                 start_insertion++;
             }
         }
