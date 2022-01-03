@@ -110,7 +110,6 @@ public class GrapheComplet {
             return 0;
         }
         int total_cost = 0;
-        //total_cost += getPoids(chemin.getLast(), chemin.get(0));
         for (int i = 0, j = 1; j < chemin.size(); i++, j++) {
             total_cost += getPoids(chemin.get(i), chemin.get(j));
         }

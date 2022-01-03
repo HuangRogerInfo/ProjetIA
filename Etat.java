@@ -4,16 +4,15 @@ import java.util.Objects;
 
 public class Etat {
     private GrapheComplet g;
-    private HashSet<Integer> visited;
     private int goal;
     private int currentCity;
+    private HashSet<Integer> visited;
     private LinkedList<Etat> previousEtat;
 
     /**
-     * Constructeur d'un état initial
-     * 
-     * @param g     le graphe associé
-     * @param start la ville de départ
+     * Constructeur d'un etat initial
+     * @param g     le graphe associe
+     * @param start la ville de depart
      */
     public Etat(GrapheComplet g, int start) {
         this.g = g;
@@ -23,6 +22,14 @@ public class Etat {
         this.previousEtat = new LinkedList<Etat>();
     }
 
+    /**
+     * Constructeur d'un etat quelconque
+     * @param g le graphe associe
+     * @param current_city la ville courante
+     * @param goal la ville d'arrivee
+     * @param visited les villes visitees
+     * @param previousEtat les etats precedents
+     */
     public Etat(GrapheComplet g, int current_city, int goal, HashSet<Integer> visited, LinkedList<Etat> previousEtat) {
         this.g = g;
         this.visited = visited;
@@ -30,45 +37,44 @@ public class Etat {
         this.goal = goal;
         this.previousEtat = previousEtat;
     }
+    
     /**
      * Retourne vrai si l'état est résolu, faux sinon
-     * 
      * @return un booléen
      */
     public boolean isSolved() {
-        return this.visited.size() == g.getTaille() && currentCity == 0;
+        return this.visited.size() == g.getTaille() && currentCity == goal;
     }
 
     /**
-     * Retourne l'ensemble des actions possibles à partir de l'état courant
-     * 
-     * @return un ensemble d'état
+     * Retourne l'ensemble des villes atteignables a partir de l'etat courant
+     * @return un ensemble d'entier
      * @throws Exception
      */
-    public HashSet<Action> getActions() throws Exception {
-        HashSet<Action> actions = new HashSet<Action>();
+    public HashSet<Integer> getActions() throws Exception {
+        HashSet<Integer> villes = new HashSet<Integer>();
 
         for(int j = 0; j<g.getTaille(); j++){
-            //Pour toutes les villes non visités
+            //Pour toutes les villes non visites
             if(!visited.contains(j)){
-                //On ajoute l'action pour parvenir à cette ville avec le minimum de cout
                 if(visited.size()<g.getTaille()-1){
                     if(j!=goal){
-                        int cn = g.getPoids(currentCity, j);
-                        Action new_action = new Action(j, cn);
-                        actions.add(new_action);
+                        villes.add(j);
                     }
                 }
                 else{
-                        int cn = g.getPoids(currentCity, j);
-                        Action new_action = new Action(j, cn);
-                        actions.add(new_action);
+                    villes.add(j);
                 }
             }
         }
-        return actions;
+        return villes;
     }
 
+    /**
+     * Retourne l'etat courant apres une transition
+     * @param ville
+     * @return un etat
+     */
     public Etat goTO(int ville){
         HashSet<Integer> new_visited = new HashSet<>(visited);
         LinkedList<Etat> new_previousEtat = new LinkedList<Etat>(previousEtat);
@@ -77,17 +83,8 @@ public class Etat {
         return new Etat(g,ville,goal,new_visited,new_previousEtat);
     }
 
-    public LinkedList<Etat> getPreviousEtat(){
-        return this.previousEtat;
-    }
-
-    public Integer getCurrentCity(){
-        return this.currentCity;
-    }
-
     /**
      * Retourne la valeur de l'heuristique MST pour l'état courant
-     * 
      * @return un entier
      * @throws Exception
      */
@@ -129,6 +126,10 @@ public class Etat {
         return new GrapheComplet(new_matrice).getpoidsACM();
     }
 
+    /**
+     * Retourne le chemin courant
+     * @return
+     */
     public LinkedList<Integer> getChemin(){
         LinkedList<Integer> chemin = new LinkedList<Integer>();
         for(Etat e: getPreviousEtat()){
@@ -136,6 +137,22 @@ public class Etat {
         }
         chemin.add(getCurrentCity());
         return chemin;
+    }
+
+    /**
+     * Retourne une liste ordonnee des etats precedent
+     * @return une liste d'etat
+     */
+    public LinkedList<Etat> getPreviousEtat(){
+        return this.previousEtat;
+    }
+
+    /**
+     * Retourne la ville courante
+     * @return
+     */
+    public Integer getCurrentCity(){
+        return this.currentCity;
     }
 
     @Override

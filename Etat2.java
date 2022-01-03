@@ -98,7 +98,7 @@ public class Etat2 {
     }
 
     /**
-     * Modifie un noeud du circuit
+     * Modifie un sommet à une position donnée du circuit
      * @param position
      * @param valeur
      * @throws Exception
@@ -111,7 +111,7 @@ public class Etat2 {
     }
 
     /**
-     * Retourne un noeud du circuit
+     * Retourne un sommet à une position donnée du circuit
      * @param position
      * @return un entier
      * @throws Exception
@@ -124,7 +124,7 @@ public class Etat2 {
     }
 
     /**
-     * Retourne le circuit hamiltonien de l'état courant
+     * Retourne le circuit de l'état courant
      * 
      * @return une liste d'entier
      */

@@ -9,7 +9,6 @@ public class Astar {
 
     /**
      * Constructeur initialisant l'état initial
-     * 
      * @param g
      * @param start
      */
@@ -22,30 +21,28 @@ public class Astar {
 
     /**
      * Algorithme informee de recherche d'une instance de voyageur de commerce
-     * 
      * @return un circuit optimal
-     * @throws Exception en cas de depassement d'indice
+     * @throws Exception
      */
     public LinkedList<Integer> compute() throws Exception {
         int size_max_frontiere = 0;
 
         while (!currentState.isSolved()) {
-
             HashSet<ElementFrontier> frontier_total = new HashSet<ElementFrontier>();
-
             
             //On construit la frontiere des états explorés
             for(Etat explored : exploredState){
-                //Pour chaque états explores on calcule les actions possibles
-                HashSet<Action> actions = explored.getActions();
+
+                //Pour chaque etats explores on calcule les villes atteignables
+                HashSet<Integer> villes = explored.getActions();
                 
-                //Pour chaque actions possibles on cree un etat voisin
-                for(Action a : actions){
-                    Etat newEtat = explored.goTO(a.getVille());
+                //Pour chaque villes atteignables on cree un etat voisin
+                for(Integer ville : villes){
+                    Etat newEtat = explored.goTO(ville);
 
                     //Si il n'a pas deja ete explore
                     if(!exploredState.contains(newEtat)){
-                        //On l'ajoute si il est plus interessant en terme de cout
+                        //Et si il est plus interessant en terme de cout, on l'ajoute
                         int cn = g.getTotalCost(newEtat.getChemin());
                         int hn = newEtat.getHeuristiqueMST();
                         ElementFrontier new_EF = new ElementFrontier(newEtat,cn+hn);
@@ -66,9 +63,11 @@ public class Astar {
                     }
                 }
             }
-            System.out.println(frontier_total.size());
+            if(frontier_total.size()>size_max_frontiere){
+                size_max_frontiere = frontier_total.size();
+            }
 
-            //On choisit le minimum des états
+            //On choisit le minimum des etats
             Iterator<ElementFrontier> it = frontier_total.iterator();
             ElementFrontier min = it.next();
             while(it.hasNext()){
@@ -78,8 +77,7 @@ public class Astar {
                 }
             }
 
-            //On transite
-            System.out.println(min.getEtat().getChemin());
+            //On transite vers ce minimum
             exploredState.add(min.getEtat());
             currentState = min.getEtat();
         }
