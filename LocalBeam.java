@@ -30,13 +30,13 @@ public class LocalBeam {
     public LinkedList<Integer> compute(int nb_iterations) throws Exception {
 
         for (int i = 0; i < nb_iterations; i++) {
-            // on calcule la frontière
+            // on calcule les voisins
             HashSet<Etat2> frontier = new HashSet<Etat2>();
             for (Etat2 unEtat : trackedStates) {
                 frontier.addAll(unEtat.getFrontier());
             }
 
-            // On cherche les k meilleurs de la frontière
+            // On cherche les k meilleurs du voisinage
             HashSet<Etat2> meilleurs_etats = new HashSet<Etat2>();
 
             while (meilleurs_etats.size() < k) {

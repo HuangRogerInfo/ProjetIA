@@ -73,6 +73,14 @@ public class Main {
             GrapheComplet graphe2 = new GrapheComplet(matrice_exemple2);
             graphe2.printMatrice();
 
+            // Application d'Astar
+            System.out.println("\n---EXECUTION ASTAR---");
+            startTime = System.currentTimeMillis();
+            Astar a = new Astar(graphe2, 0);
+            a.compute();
+            endTime = System.currentTimeMillis();
+            System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime) + "ms");
+
             // Application de Local Beam
             System.out.println("\n---EXECUTION LOCAL BEAM---");
             startTime = System.currentTimeMillis();

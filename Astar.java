@@ -40,26 +40,12 @@ public class Astar {
                 for(Integer ville : villes){
                     Etat newEtat = explored.goTO(ville);
 
-                    //Si il n'a pas deja ete explore
+                    //Si il n'a pas deja ete explore, on l'ajoute dans la frontiere
                     if(!exploredState.contains(newEtat)){
-                        //Et si il est plus interessant en terme de cout, on l'ajoute
                         int cn = g.getTotalCost(newEtat.getChemin());
                         int hn = newEtat.getHeuristiqueMST();
                         ElementFrontier new_EF = new ElementFrontier(newEtat,cn+hn);
-                        
-                        boolean present = false;
-                        for(ElementFrontier EF: frontier_total){
-                            if(EF.getEtat().equals(new_EF.getEtat())){
-                                present = true;
-                                if(EF.getCout() > new_EF.getCout()){
-                                    frontier_total.remove(EF);
-                                    frontier_total.add(new_EF);
-                                }
-                            }
-                        }
-                        if(!present){
-                            frontier_total.add(new_EF);
-                        }
+                        frontier_total.add(new_EF);
                     }
                 }
             }
@@ -80,6 +66,7 @@ public class Astar {
             //On transite vers ce minimum
             exploredState.add(min.getEtat());
             currentState = min.getEtat();
+            System.out.println(currentState);
         }
 
         LinkedList<Integer> chemin = currentState.getChemin();
