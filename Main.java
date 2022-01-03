@@ -86,7 +86,7 @@ public class Main {
 
             // Application de Local Beam
             int nb_iteration = 10;
-            int nb_tracked = 8;
+            int nb_tracked = 10;
 
             System.out.println("\n---EXECUTION LOCAL BEAM---");
             startTime = System.currentTimeMillis();
@@ -97,8 +97,8 @@ public class Main {
 
             // Application de Genetic
             int taille_population = 150;
-            nb_iteration = 20;
-            double taux_mutation = 0.1;
+            nb_iteration = 50;
+            double taux_mutation = 0.3;
             double taux_elitisme = 0.2;
 
             System.out.println("\n---EXECUTION GENETIC---");
