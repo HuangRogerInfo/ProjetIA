@@ -3,7 +3,6 @@ import java.util.Random;
 public class Main {
     public static Random rnd = new Random(2);
     public static void main(String[] args) {
-        // Matrice Exemple
         int[][] matrice_exemple = {
             { 0, 21, 9, 21, 1 },
             { 21, 0, 4, 8, 20 },
