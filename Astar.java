@@ -3,6 +3,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Astar {
+    private GrapheComplet g;
     private Etat currentState;
     private HashSet<Etat> exploredState;
 
@@ -13,8 +14,10 @@ public class Astar {
      * @param start
      */
     public Astar(GrapheComplet g, int start) {
+        this.g = g;
         this.currentState = new Etat(g, start);
         this.exploredState = new HashSet<Etat>();
+        exploredState.add(currentState);
     }
 
     /**
@@ -25,52 +28,67 @@ public class Astar {
      */
     public LinkedList<Integer> compute() throws Exception {
         int size_max_frontiere = 0;
-        exploredState.add(currentState);
 
         while (!currentState.isSolved()) {
-            // On calcule la frontière
-            HashSet<Etat> frontier = new HashSet<Etat>();
-            for (Etat e : exploredState) {
-                for (Etat voisin : e.getFrontier()) {
-                    if (!exploredState.contains(voisin)) {
-                        frontier.add(voisin);
+
+            HashSet<ElementFrontier> frontier_total = new HashSet<ElementFrontier>();
+
+            
+            //On construit la frontiere des états explorés
+            for(Etat explored : exploredState){
+                //Pour chaque états explores on calcule les actions possibles
+                HashSet<Action> actions = explored.getActions();
+                
+                //Pour chaque actions possibles on cree un etat voisin
+                for(Action a : actions){
+                    Etat newEtat = explored.goTO(a.getVille());
+
+                    //Si il n'a pas deja ete explore
+                    if(!exploredState.contains(newEtat)){
+                        //On l'ajoute si il est plus interessant en terme de cout
+                        int cn = g.getTotalCost(newEtat.getChemin());
+                        int hn = newEtat.getHeuristiqueMST();
+                        ElementFrontier new_EF = new ElementFrontier(newEtat,cn+hn);
+                        
+                        boolean present = false;
+                        for(ElementFrontier EF: frontier_total){
+                            if(EF.getEtat().equals(new_EF.getEtat())){
+                                present = true;
+                                if(EF.getCout() > new_EF.getCout()){
+                                    frontier_total.remove(EF);
+                                    frontier_total.add(new_EF);
+                                }
+                            }
+                        }
+                        if(!present){
+                            frontier_total.add(new_EF);
+                        }
                     }
                 }
             }
+            System.out.println(frontier_total.size());
 
-            // On garde en mémoire la taille de la frontière maximale
-            if (frontier.size() > size_max_frontiere) {
-                size_max_frontiere = frontier.size();
-            }
-
-            // On cherche l'état minimum de la frontière
-            Iterator<Etat> it = frontier.iterator();
-            Etat etatMin = it.next();
-
-            while (it.hasNext()) {
-                int cn = etatMin.getTotalCost();
-                int hn = etatMin.getHeuristiqueMST();
-                Etat concurrent = it.next();
-                int new_cn = concurrent.getTotalCost();
-                int new_hn = concurrent.getHeuristiqueMST();
-
-                if (new_cn + new_hn < cn + hn) {
-                    etatMin = concurrent;
+            //On choisit le minimum des états
+            Iterator<ElementFrontier> it = frontier_total.iterator();
+            ElementFrontier min = it.next();
+            while(it.hasNext()){
+                ElementFrontier concurrent = it.next();
+                if(concurrent.getCout()<min.getCout()){
+                    min = concurrent;
                 }
             }
 
-            // L'état courant devient l'état minimum
-            currentState = etatMin;
-            // System.out.println("Etat courant=" + currentState.getVisited());
-            // int cn = currentState.getTotalCost();
-            // int hn = currentState.getHeuristiqueMST();
-            // int total = cn + hn;
-            // System.out.println("hn=" + hn + " cn=" + cn + " total=" + total + "\n");
-            exploredState.add(currentState);
+            //On transite
+            System.out.println(min.getEtat().getChemin());
+            exploredState.add(min.getEtat());
+            currentState = min.getEtat();
         }
-        System.out.println("Result Astar = " + currentState.getVisited());
-        System.out.println("[FINAL COST] = " + currentState.getTotalCost());
+
+        LinkedList<Integer> chemin = currentState.getChemin();
+
+        System.out.println("Result Astar = " + chemin);
+        System.out.println("[FINAL COST] = " + g.getTotalCost(chemin));
         System.out.println("[FRONTIER MAX] = " + size_max_frontiere);
-        return currentState.getVisited();
+        return chemin;
     }
 }

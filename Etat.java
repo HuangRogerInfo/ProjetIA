@@ -4,8 +4,10 @@ import java.util.Objects;
 
 public class Etat {
     private GrapheComplet g;
-    private LinkedList<Integer> visited;
+    private HashSet<Integer> visited;
     private int goal;
+    private int currentCity;
+    private LinkedList<Etat> previousEtat;
 
     /**
      * Constructeur d'un état initial
@@ -15,79 +17,72 @@ public class Etat {
      */
     public Etat(GrapheComplet g, int start) {
         this.g = g;
-        this.visited = new LinkedList<Integer>();
+        this.currentCity = start;
         this.goal = start;
+        this.visited = new HashSet<Integer>();
+        this.previousEtat = new LinkedList<Etat>();
     }
 
-    /**
-     * Constructeur d'un état quelconque
-     * 
-     * @param g
-     * @param start
-     * @param visited
-     */
-    public Etat(GrapheComplet g, int goal, LinkedList<Integer> visited) {
+    public Etat(GrapheComplet g, int current_city, int goal, HashSet<Integer> visited, LinkedList<Etat> previousEtat) {
         this.g = g;
         this.visited = visited;
+        this.currentCity = current_city;
         this.goal = goal;
+        this.previousEtat = previousEtat;
     }
-
     /**
      * Retourne vrai si l'état est résolu, faux sinon
      * 
      * @return un booléen
      */
     public boolean isSolved() {
-        return this.visited.size() == g.getTaille() && this.visited.getLast() == goal;
+        return this.visited.size() == g.getTaille() && currentCity == 0;
     }
 
     /**
-     * Retourne la liste ordonnée des villes visitées
-     * 
-     * @return une liste d'entier
-     */
-    public LinkedList<Integer> getVisited() {
-        return this.visited;
-    }
-
-    /**
-     * Retourne l'ensemble des états atteignables à partir de l'état courant
+     * Retourne l'ensemble des actions possibles à partir de l'état courant
      * 
      * @return un ensemble d'état
      * @throws Exception
      */
-    public HashSet<Etat> getFrontier() throws Exception {
-        HashSet<Etat> frontier = new HashSet<Etat>();
+    public HashSet<Action> getActions() throws Exception {
+        HashSet<Action> actions = new HashSet<Action>();
 
-        for (int j = 0; j < g.getTaille(); j++) {
-            if (!visited.contains(j)) {
-                if (j != goal || (j == goal && visited.size() == g.getTaille() - 1)) {
-                    LinkedList<Integer> new_visited = new LinkedList<Integer>(visited);
-                    new_visited.add(j);
-
-                    frontier.add(new Etat(g, goal, new_visited));
+        for(int j = 0; j<g.getTaille(); j++){
+            //Pour toutes les villes non visités
+            if(!visited.contains(j)){
+                //On ajoute l'action pour parvenir à cette ville avec le minimum de cout
+                if(visited.size()<g.getTaille()-1){
+                    if(j!=goal){
+                        int cn = g.getPoids(currentCity, j);
+                        Action new_action = new Action(j, cn);
+                        actions.add(new_action);
+                    }
+                }
+                else{
+                        int cn = g.getPoids(currentCity, j);
+                        Action new_action = new Action(j, cn);
+                        actions.add(new_action);
                 }
             }
         }
-        return frontier;
+        return actions;
     }
 
-    /**
-     * Retourne la distance totale parcourue
-     * 
-     * @return un entier
-     * @throws Exception
-     */
-    public int getTotalCost() throws Exception {
-        if (visited.size() == 0) {
-            return 0;
-        }
-        int total_cost = 0;
-        total_cost += g.getPoids(goal, visited.get(0));
-        for (int i = 0, j = 1; j < visited.size(); i++, j++) {
-            total_cost += g.getPoids(visited.get(i), visited.get(j));
-        }
-        return total_cost;
+    public Etat goTO(int ville){
+        HashSet<Integer> new_visited = new HashSet<>(visited);
+        LinkedList<Etat> new_previousEtat = new LinkedList<Etat>(previousEtat);
+        new_visited.add(ville);
+        new_previousEtat.add(this);
+        return new Etat(g,ville,goal,new_visited,new_previousEtat);
+    }
+
+    public LinkedList<Etat> getPreviousEtat(){
+        return this.previousEtat;
+    }
+
+    public Integer getCurrentCity(){
+        return this.currentCity;
     }
 
     /**
@@ -97,41 +92,35 @@ public class Etat {
      * @throws Exception
      */
     public int getHeuristiqueMST() throws Exception {
-        // Etat final -> le sous graphe contient uniquement la ville_initiale ce qui
-        // donne un poids ACM=0
-        if (this.isSolved()) {
+        // Si toutes les villes sont visités alors le sous graphe contient uniquement la ville_initiale
+        if (this.visited.size()==g.getTaille()) {
             return 0;
         }
 
-        // Etat initial -> on retourne le poids ACM de l'ensemble du graphe
+        // Si aucune ville n'a été visitée alors le sous graphe = graphe complet
         if (visited.size() == 0) {
             return this.g.getpoidsACM();
         }
 
-        // Sinon construction du sous graphe pour estimer le cout du chemin partiel
-        int ville_actuelle = visited.getLast();
-
-        // On enleve du graphe les villes visités sauf la ville_actuelle
+        // Sinon on enleve du graphe complet les villes visités sauf la ville_actuelle
         HashSet<Integer> toDelete = new HashSet<Integer>();
         for (int i = 0; i < g.getTaille(); i++) {
-            if (visited.contains(i) && i != ville_actuelle) {
+            if (visited.contains(i) && i != currentCity && i != goal) {
                 toDelete.add(i);
             }
         }
 
-        int new_taille = g.getTaille() - visited.size() + 1;
+        int new_taille = g.getTaille() - toDelete.size();
         int[][] new_matrice = new int[new_taille][new_taille];
 
         for (int i = 0, new_i = 0; new_i < new_taille; i++, new_i++) {
             for (int j = 0, new_j = 0; new_j < new_taille; j++, new_j++) {
-
                 while (toDelete.contains(i)) {
                     i++;
                 }
                 while (toDelete.contains(j)) {
                     j++;
                 }
-                // System.out.println(i+"/"+j);
                 new_matrice[new_i][new_j] = g.getPoids(i, j);
             }
         }
@@ -140,13 +129,13 @@ public class Etat {
         return new GrapheComplet(new_matrice).getpoidsACM();
     }
 
-    /**
-     * Retourne la valeur d'une heuristique nulle
-     * 
-     * @return 0
-     */
-    public int getHeuristiqueNulle() {
-        return 0;
+    public LinkedList<Integer> getChemin(){
+        LinkedList<Integer> chemin = new LinkedList<Integer>();
+        for(Etat e: getPreviousEtat()){
+            chemin.add(e.getCurrentCity());
+        }
+        chemin.add(getCurrentCity());
+        return chemin;
     }
 
     @Override
@@ -158,11 +147,16 @@ public class Etat {
         if (getClass() != o.getClass())
             return false;
         Etat e = (Etat) o;
-        return (this.visited.equals(e.visited));
+        return (this.visited.equals(e.visited)&&this.currentCity == e.currentCity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(visited);
+        return Objects.hash(visited,currentCity);
+    }
+
+    @Override
+    public String toString() {
+        return "[ville_courante=" + currentCity + " visited=" + visited.toString()+"]";
     }
 }

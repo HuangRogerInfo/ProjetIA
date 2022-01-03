@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class GrapheComplet {
     private int taille;
@@ -96,6 +97,24 @@ public class GrapheComplet {
 
         matrice[sommet1][sommet2] = distance;
         matrice[sommet2][sommet1] = distance;
+    }
+
+    /**
+     * Retourne la distance totale parcourue à partir d'un chemin
+     * 
+     * @return un entier
+     * @throws Exception
+     */
+    public int getTotalCost(LinkedList<Integer> chemin) throws Exception {
+        if (chemin.size() == 0) {
+            return 0;
+        }
+        int total_cost = 0;
+        //total_cost += getPoids(chemin.getLast(), chemin.get(0));
+        for (int i = 0, j = 1; j < chemin.size(); i++, j++) {
+            total_cost += getPoids(chemin.get(i), chemin.get(j));
+        }
+        return total_cost;
     }
 
     /**

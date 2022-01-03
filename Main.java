@@ -2,10 +2,11 @@ public class Main {
     public static void main(String[] args) {
         // Matrice Exemple
         int[][] matrice_exemple = {
-                { 0, 5, 8, 7 },
-                { 5, 0, 6, 7 },
-                { 8, 6, 0, 5 },
-                { 7, 7, 5, 0 },
+            { 0, 21, 9, 21, 1 },
+            { 21, 0, 4, 8, 20 },
+            { 9, 4, 0, 6, 7 },
+            { 21, 8, 6, 0, 11 },
+            { 1, 20, 7, 11, 6 }
         };
 
         int[][] matrice_exemple2 = {
