@@ -35,7 +35,7 @@ public class Etat2 {
     }
 
     /**
-     * Retourne l'ensemble des états atteignables à partir de l'état courant
+     * Retourne l'ensemble des états atteignables avec 2-opt à partir de l'état courant
      * 
      * @return un ensemble d'état
      */
