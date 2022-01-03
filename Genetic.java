@@ -88,7 +88,7 @@ public class Genetic {
             ArrayList<Etat2> nwPopulation = crossover(selection());
             // Ces enfant subissent aleatoirement des mutations
             for (int i = 0; i < nwPopulation.size(); i++) {
-                if (Math.random() < mutationRate) {
+                if (Main.rnd.nextDouble() < mutationRate) {
                     Etat2 before = nwPopulation.get(i);
                     Etat2 after = before.mutation();
                     nwPopulation.set(i, after);
@@ -162,7 +162,7 @@ public class Genetic {
             proba.add(fitness_score);
         }
         // Nombre aleatoire entre 0 et somme du tableau
-        double rand = Math.random() * somme_proba;
+        double rand = Main.rnd.nextDouble() * somme_proba;
 
         // Choix de l'individu
         float cumul = 0;
@@ -184,7 +184,7 @@ public class Genetic {
      * @throws Exception
      */
     public Couple formerEnfants(Etat2 pere, Etat2 mere) throws Exception {
-        int decoupage = (int) (Math.floor(Math.random() * g.getTaille()));
+        int decoupage = (int) (Math.floor(Main.rnd.nextDouble() * g.getTaille()));
 
         Etat2 enfant1 = new Etat2(g);
         ArrayList<Integer> contenuPere = new ArrayList<Integer>();

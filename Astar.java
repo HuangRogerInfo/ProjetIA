@@ -66,7 +66,7 @@ public class Astar {
             //On transite vers ce minimum
             exploredState.add(min.getEtat());
             currentState = min.getEtat();
-            System.out.println(currentState);
+            //System.out.println(currentState);
         }
 
         LinkedList<Integer> chemin = currentState.getChemin();

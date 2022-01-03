@@ -19,7 +19,7 @@ public class Etat2 {
         for (int i = 0; i < g.getTaille(); i++) {
             circuit_aleatoire.add(i);
         }
-        Collections.shuffle(circuit_aleatoire);
+        Collections.shuffle(circuit_aleatoire,Main.rnd);
         this.circuit = circuit_aleatoire;
     }
 
@@ -71,8 +71,8 @@ public class Etat2 {
      */
     public Etat2 mutation() {
 
-        int i = (int) (Math.floor(Math.random() * circuit.size()));
-        int j = (int) (Math.floor(Math.random() * circuit.size()));
+        int i = (int) (Math.floor(Main.rnd.nextDouble()* circuit.size()));
+        int j = (int) (Math.floor(Main.rnd.nextDouble()* circuit.size()));
 
         LinkedList<Integer> new_list = new LinkedList<Integer>(circuit);
 
