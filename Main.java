@@ -55,7 +55,7 @@ public class Main {
             System.out.println("\n---EXECUTION GENETIC---");
             startTime = System.currentTimeMillis();
             Genetic g = new Genetic(graphe, 5);
-            g.compute(0.2, 0.3, 10);
+            g.compute(0.1, 0.3, 10);
             endTime = System.currentTimeMillis();
             System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime)+ "ms");
 
@@ -73,14 +73,6 @@ public class Main {
             GrapheComplet graphe2 = new GrapheComplet(matrice_exemple2);
             graphe2.printMatrice();
 
-            // Application d'Astar
-            System.out.println("\n---EXECUTION ASTAR---");
-            startTime = System.currentTimeMillis();
-            Astar a = new Astar(graphe2, 0);
-            a.compute();
-            endTime = System.currentTimeMillis();
-            System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime) + "ms");
-
             // Application de Local Beam
             System.out.println("\n---EXECUTION LOCAL BEAM---");
             startTime = System.currentTimeMillis();
@@ -93,7 +85,7 @@ public class Main {
             System.out.println("\n---EXECUTION GENETIC---");
             startTime = System.currentTimeMillis();
             Genetic g = new Genetic(graphe2, 5);
-            g.compute(0.2, 0.3, 10);
+            g.compute(0.1, 0.3, 100);
             endTime = System.currentTimeMillis();
             System.out.println("Total elapsed time in execution of method callMethod() is :" + (endTime - startTime)+ "ms");
 
