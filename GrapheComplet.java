@@ -46,6 +46,22 @@ public class GrapheComplet {
     }
 
     /**
+     * Constructeur d'un graphe complet à partir d'une liste de villes
+     * 
+     * @param villes une liste
+     * @throws Exception
+     */
+    public GrapheComplet(ArrayList<Ville> villes) {
+        this.taille = villes.size();
+        this.matrice = new int[taille][taille];
+        for (int i = 0; i < taille; i++) {
+            for (int j = 0; j < taille; j++) {
+                matrice[i][j] = Ville.distanceEuclidienne(villes.get(i), villes.get(j));
+            }
+        }
+    }
+
+    /**
      * Retourne le poids de l'arbre couvrant minimal
      * 
      * @return un entier

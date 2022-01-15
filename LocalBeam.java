@@ -1,6 +1,5 @@
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 public class LocalBeam {
     private int k;
@@ -8,6 +7,7 @@ public class LocalBeam {
 
     /**
      * Constructeur initialisant k états aléatoires
+     * 
      * @param g un graphe
      * @param k un nombre d'états traqués
      */
@@ -23,11 +23,12 @@ public class LocalBeam {
 
     /**
      * Algorithme de recherche local d'une instance de voyageur de commerce
+     * 
      * @param nb_iterations
      * @return un circuit
      * @throws Exception
      */
-    public LinkedList<Integer> compute(int nb_iterations) throws Exception {
+    public Etat2 compute(int nb_iterations) throws Exception {
 
         for (int i = 0; i < nb_iterations; i++) {
             // on calcule les voisins
@@ -56,7 +57,7 @@ public class LocalBeam {
             trackedStates = meilleurs_etats;
         }
 
-        //A la fin on retourne le meilleur état parmi les états traqués
+        // A la fin on retourne le meilleur état parmi les états traqués
         Iterator<Etat2> it = trackedStates.iterator();
         Etat2 meilleurEtat = it.next();
         while (it.hasNext()) {
@@ -65,8 +66,6 @@ public class LocalBeam {
                 meilleurEtat = concurrent;
             }
         }
-        System.out.println("Result LocalBeam = " + meilleurEtat.getCircuit());
-        System.out.println("[FINAL COST] = " + meilleurEtat.getTotalCost());
-        return meilleurEtat.getCircuit();
+        return meilleurEtat;
     }
 }

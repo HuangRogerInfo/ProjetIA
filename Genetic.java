@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Genetic {
     private GrapheComplet g;
@@ -81,7 +80,7 @@ public class Genetic {
      * @return le meilleur etat apres toutes les generations
      * @throws Exception
      */
-    public LinkedList<Integer> compute(double mutationRate, double elitistRate, int nb_iteration) throws Exception {
+    public Etat2 compute(double mutationRate, double elitistRate, int nb_iteration) throws Exception {
         // A chaque itération
         for (int j = 0; j < nb_iteration; j++) {
             // On fait une selection en fonction de la fitness puis on forme des enfants
@@ -136,9 +135,7 @@ public class Genetic {
                 meilleurEtat = concurrent;
             }
         }
-        System.out.println("Result genetic = " + meilleurEtat.getCircuit());
-        System.out.println("[FINAL COST] = " + meilleurEtat.getTotalCost());
-        return meilleurEtat.getCircuit();
+        return meilleurEtat;
     }
 
     /**
